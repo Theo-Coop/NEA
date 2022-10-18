@@ -19,6 +19,9 @@ class Gui:
         clear_but = Button(self.window, text="Clear", font=FONT, command=self.clear)
         clear_but.grid(row=0, column=1)
 
+        valid_but = Button(self.window, text="Valid", font=FONT, command=self.is_valid)
+        valid_but.grid(row=0, column=2)
+
         for row in range(1, 10):
             for column in range(1, 10):
 
@@ -67,6 +70,9 @@ class Gui:
         num = self.get_selected_num()
         self.board.update(num, row, col)
         self.game_button_dict[(row, col)].config(text=num)
+
+    def is_valid(self):
+        print(self.board.whole_board_valid())
 
     def clear(self):
         for button in self.game_button_dict:
