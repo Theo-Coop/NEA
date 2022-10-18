@@ -31,30 +31,39 @@ class Board:
     def board_clear(self):
         self.editable_board = deepcopy(self.STARTING_BOARD)
 
+    
+    def num_valid(self, number, r, c):
+        # Check row
+        for i in range(len(self.editable_board[0])):
+            if self.editable_board[r][i] == number and (r,i) != (r,c):
+                print("row")
+                return False
+
+        # Check column
+        for i in range(len(self.editable_board)):
+            if self.editable_board[i][c] == number and (i,c) != (r,c):
+                print("column")
+                return False
+
+        # Check 3x3 cube
+        box_y = r // 3
+        box_x = c // 3
+
+        for i in range(box_y * 3, box_y*3 + 3):
+            for j in range(box_x * 3, box_x*3 + 3):
+                if self.editable_board[i][j] == number and (i,j) != (r,c):
+                    print("box")
+                    return False
+
+        return True
+
 
     def whole_board_valid(self): #Checks if the whole current board is valid
         for r in range(9):
             for c in range(9):
                 num = self.editable_board[r][c]
                 if num != 0:
-                    # Check row
-                    for i in range(len(self.editable_board)):
-                        if self.editable_board[r][i] == num and (r,i) != (r,c):
-                            return False
-
-                    # Check column
-                    for i in range(len(self.editable_board)):
-                        if self.editable_board[i][c] == num and (i,c) != (r,c):
-                            return False
-
-                    # Check 3x3 cube
-                    box_y = r // 3
-                    box_x = c // 3
-
-                    for i in range(box_y * 3, box_y*3 + 3):
-                        for j in range(box_x * 3, box_x*3 + 3):                           
-                            if self.editable_board[i][j] == num and (i,j) != (r,c):
-                                return False
+                    if self.num_valid(num, r, c) == False:  return False
 
         return True
 

@@ -23,12 +23,12 @@ def find_empty(board): # find empty space on board
 def valid(board, num, r, c): # Checks if the current selection is valid
     # Check row
     for i in range(len(board[0])):
-        if board[r][i] == num:
+        if board[r][i] == num and (r,i) != (r,c):
             return False
 
     # Check column
     for i in range(len(board)):
-        if board[i][c] == num:
+        if board[i][c] == num and (i,c) != (r,c):
             return False
 
     # Check 3x3 cube
@@ -37,7 +37,7 @@ def valid(board, num, r, c): # Checks if the current selection is valid
 
     for i in range(box_y * 3, box_y*3 + 3):
         for j in range(box_x * 3, box_x*3 + 3):
-            if board[i][j] == num:
+            if board[i][j] == num and (i,j) != (r,c):
                 return False
     return True
 
@@ -61,33 +61,7 @@ def solve(board):
                 board[row][col] = 0
 
     return False
-
-def whole_board_valid(): # Checks if the current selection is valid
-        for r in range(9):
-            for c in range(9):
-                num = bo[r][c]
-                print(num)
-                while num != 0:
-                    # Check row
-                    for i in range(len(bo)):
-                        if bo[r][i] == num:
-                            return False
-
-                    # Check column
-                    for i in range(len(bo)):
-                        if bo[i][c] == num:
-                            return False
-
-                    # Check 3x3 cube
-                    box_y = r // 3
-                    box_x = c // 3
-
-                    for i in range(box_y * 3, box_y*3 + 3):
-                        for j in range(box_x * 3, box_x*3 + 3):
-                            if bo[i][j] == num:
-                                return False
-        return True
-    
+ 
 
 bo = [
     [0,7,5,0,0,0,0,1,6],
