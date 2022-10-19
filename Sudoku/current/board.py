@@ -36,13 +36,11 @@ class Board:
         # Check row
         for i in range(len(self.editable_board[0])):
             if self.editable_board[r][i] == number and (r,i) != (r,c):
-                print("row")
                 return False
 
         # Check column
         for i in range(len(self.editable_board)):
             if self.editable_board[i][c] == number and (i,c) != (r,c):
-                print("column")
                 return False
 
         # Check 3x3 cube
@@ -52,7 +50,6 @@ class Board:
         for i in range(box_y * 3, box_y*3 + 3):
             for j in range(box_x * 3, box_x*3 + 3):
                 if self.editable_board[i][j] == number and (i,j) != (r,c):
-                    print("box")
                     return False
 
         return True
