@@ -1,5 +1,6 @@
 from tkinter import *
 from board import Board
+from stack import Node, Stack
 
 FONT = ("Arial", 12, "bold")
 
@@ -14,37 +15,41 @@ class Gui:
         self.num_button_dict = {}
 
         self.board = Board()
+        self.numbers_stack = Stack()
 
 
         clear_but = Button(self.window, text="Clear", font=FONT, command=self.clear)
         clear_but.grid(row=0, column=1)
 
+        undo_but = Button(self.window, text="Undo", font=FONT, command=self.undo)
+        undo_but.grid(row=0, column=2)
+
         valid_but = Button(self.window, text="Valid", font=FONT, command=self.is_valid)
-        valid_but.grid(row=0, column=2)
+        valid_but.grid(row=0, column=3)
 
         for row in range(1, 10):
-            for column in range(1, 10):
+            for col in range(1, 10):
 
-                if row in (1,2,3,7,8,9) and column in (4,5,6) or row in (4,5,6) and column in (1,2,3,7,8,9):
+                if row in (1,2,3,7,8,9) and col in (4,5,6) or row in (4,5,6) and col in (1,2,3,7,8,9):
                     colour = "#FF99D7"
                 else:
                     colour = "#FFD372"
                     
 
                 frame = Frame(self.window, width=10, height=10, padx=5, pady=5, bg=colour)
-                frame.grid(row=row+1, column=column)
+                frame.grid(row=row+1, column=col)
 
-                start_text = self.board.get_num(row, column)
+                start_text = self.board.get_num(row, col)
                 if start_text == 0:
-                    game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="red", font=FONT, command=lambda row=row, col=column: self.update_num(row, col))
+                    game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="red", font=FONT, command=lambda row=row, col=col: self.update_num(row, col))
                     game_buttons.pack()
-                    self.game_button_dict[(row, column)] = game_buttons
+                    self.game_button_dict[(row, col)] = game_buttons
 
                 else:
-                    starting_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, text=start_text, font=FONT, command=lambda row=row, col=column: self.update_num(row, col))
+                    starting_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, text=start_text, font=FONT, command=lambda row=row, col=col: self.update_num(row, col))
                     starting_buttons.pack()
                     starting_buttons["state"] = DISABLED
-                    self.starting_button_dict[(row, column)] = game_buttons
+                    self.starting_button_dict[(row, col)] = game_buttons
                     
 
         empty_space = Label(self.window, text="")
@@ -60,19 +65,32 @@ class Gui:
 
         self.window.mainloop()
 
+
     def set_selected_num(self, num):
         self.selected_num = num
 
-    def get_selected_num(self):
+
+    def get_selected_num(self): # Can probably delete this
         return self.selected_num
+
 
     def update_num(self, row, col):
         num = self.get_selected_num()
         self.board.update(num, row, col)
         self.game_button_dict[(row, col)].config(text=num)
 
+        self.numbers_stack.push([(row,col), num])
+ 
+
+    def undo(self):
+        row, col = self.numbers_stack.pop()[0]
+        self.board.reset_value(row, col)
+        self.game_button_dict[(row, col)].config(text="")
+
+
     def is_valid(self):
         print(self.board.whole_board_valid())
+
 
     def clear(self):
         for button in self.game_button_dict:

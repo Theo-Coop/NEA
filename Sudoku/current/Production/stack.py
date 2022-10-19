@@ -29,12 +29,14 @@ class Stack:
             return popping
 
 
-stack = Stack()
+# stack = Stack()
 
-for r in range(1, 4):
-    for c in range(1, 4):
-        stack.push([(r,c), 0])
+# for r in range(1, 4):
+#     for c in range(1, 4):
+#         stack.push([(r,c), 0])
 
 
-for i in range(9):
-    print(stack.pop())
+# # for i in range(9):
+# #     print(stack.pop())
+# data = stack.pop()[0][1]
+# print(data)

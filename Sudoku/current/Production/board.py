@@ -20,17 +20,19 @@ class Board:
         self.board_clear()
         
 
-    def update(self, num, y, x):
-        self.editable_board[y-1][x-1] = num
+    def update(self, num, r, c):
+        self.editable_board[r-1][c-1] = num
 
     
-    def get_num(self, y, x):
-        return self.STARTING_BOARD[y-1][x-1]
+    def get_num(self, r, c):
+        return self.STARTING_BOARD[r-1][c-1]
 
     
     def board_clear(self):
         self.editable_board = deepcopy(self.STARTING_BOARD)
 
+    def reset_value(self, r, c):
+        self.editable_board[r-1][c-1] = 0
     
     def num_valid(self, number, r, c):
         # Check row
