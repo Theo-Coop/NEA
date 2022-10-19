@@ -80,9 +80,6 @@ class Gui:
 
         self.board.board_clear()
 
-
-
-
  
 if __name__ == "__main__":
     Gui()
