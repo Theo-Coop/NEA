@@ -2,6 +2,7 @@ from copy import deepcopy
 # have to use deepcopy because using [:] or .copy() still edits the original constant. 
 # deepcopy(): a copy of the object is copied into another object. It means that any changes made to a copy of the object do not reflect in the original object. 
 # It is needed between classes and in a multi-dimensional list
+import time
 
 class Board:
     def __init__(self):
@@ -30,11 +31,19 @@ class Board:
     
     def board_clear(self):
         self.editable_board = deepcopy(self.STARTING_BOARD)
-        
+
 
     def reset_value(self, r, c):
         self.editable_board[r][c] = 0
 
+    
+    def find_empty(self):
+        for r in range(9):
+            for c in range(9):
+                if self.editable_board[r][c] == 0:
+                    return (r, c)
+
+        return False # There are no empty cells
     
     def num_valid(self, number, r, c):
         # Check row

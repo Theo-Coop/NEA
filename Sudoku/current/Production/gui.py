@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from board import Board
 from stack import Stack
+import time
 
 FONT = ("Arial", 12, "bold")
 
@@ -25,16 +26,19 @@ class Gui:
         undo_but = Button(self.window, text="Undo", font=FONT, command=self.undo)
         undo_but.grid(row=0, column=1)
 
-        valid_but = Button(self.window, text="Valid", font=FONT, command=self.is_valid)
+        valid_but = Button(self.window, text="Valid", font=FONT, command=self.all_valid)
         valid_but.grid(row=0, column=2)
+
+        solve = Button(self.window, text="Solve", font=FONT, command=self.initialise_solve)
+        solve.grid(row=0, column=3)
 
         for row in range(9):
             for col in range(9):
 
                 if row in (0,1,2,6,7,8) and col in (3,4,5) or row in (3,4,5) and col in (0,1,2,6,7,8):
-                    colour = "#94DAFF"
+                    colour = "#FCE38A"
                 else:
-                    colour = "#94B3FD" # outisde - you want darker on the outside 
+                    colour = "#FF75A0" # outisde - you want darker on the outside 
                     
 
                 frame = Frame(self.window, width=10, height=10, padx=5, pady=5, bg=colour)
@@ -42,7 +46,7 @@ class Gui:
 
                 start_text = self.board.get_num(row, col)
                 if start_text == 0:
-                    game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="red", font=FONT, command=lambda row=row, col=col: self.update_num(row, col))
+                    game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="blue", font=FONT, command=lambda row=row, col=col: self.player_update_num(row, col))
                     game_buttons.pack()
                     self.game_button_dict[(row, col)] = game_buttons
 
@@ -71,20 +75,27 @@ class Gui:
         self.selected_num = num
 
 
-    def get_selected_num(self): # Can probably delete this
-        return self.selected_num
-
-
-    def update_num(self, row, col):
+    def player_update_num(self, row, col):
         try:
-            num = self.get_selected_num()
+            num = self.selected_num
         except:
             messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
         else:
             self.board.update(num, row, col)
-            self.game_button_dict[(row, col)].config(text=num)
+            self.game_button_dict[(row, col)].config(text=num, foreground="blue")
 
             self.numbers_stack.push([(row,col), num])
+
+    
+    def solver_update_num(self, num, row, col, colour):
+        self.game_button_dict[(row, col)].config(text=num, foreground=colour)
+
+
+    def nums_select_disable(self):  # Use this after computer has solved board so user cannot edit the board
+        for i in range(1, 10):
+            self.num_button_dict[i]["state"] = DISABLED
+
+        self.selected_num = None
  
 
     def undo(self):
@@ -97,11 +108,18 @@ class Gui:
             self.game_button_dict[(row, col)].config(text="")
 
 
-    def is_valid(self):
+    def all_valid(self):
         print(self.board.whole_board_valid())
+
+    
+    def is_valid(self, num, row, col):
+        return self.board.num_valid(num, row, col)
 
 
     def clear(self):
+        for i in range(1, 10):
+            self.num_button_dict[i]["state"] = NORMAL
+
         for button in self.game_button_dict:
             self.game_button_dict[button].config(text="")
 
@@ -111,6 +129,41 @@ class Gui:
         while not self.numbers_stack.is_empty():
             self.numbers_stack.pop()
 
+
+    def initialise_solve(self):
+        self.clear() # Clears the board
+        self.solve()
+    
+
+    def solve(self):
+        find = self.board.find_empty()
+        if find == False:
+            # Solver has finished
+            self.nums_select_disable()
+            return True
+        else:
+            row, col = find[0], find[1]
+
+        for i in range(1, 10):
+            if self.is_valid(i, row, col):
+                self.board.editable_board[row][col] = i
+
+                self.window.update()
+                time.sleep(0.01)
+                self.solver_update_num(i, row, col, "green")
+
+
+                if self.solve():
+                    return True
+                else:
+                    self.board.editable_board[row][col] = 0
+
+                    self.window.update()
+                    time.sleep(0)
+                    self.solver_update_num("-", row, col, "red")
+                    
+
+        return False
  
 if __name__ == "__main__":
     Gui()
