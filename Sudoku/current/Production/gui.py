@@ -1,6 +1,7 @@
 from tkinter import *
+from tkinter import messagebox
 from board import Board
-from stack import Node, Stack
+from stack import Stack
 
 FONT = ("Arial", 12, "bold")
 
@@ -19,21 +20,21 @@ class Gui:
 
 
         clear_but = Button(self.window, text="Clear", font=FONT, command=self.clear)
-        clear_but.grid(row=0, column=1)
+        clear_but.grid(row=0, column=0)
 
         undo_but = Button(self.window, text="Undo", font=FONT, command=self.undo)
-        undo_but.grid(row=0, column=2)
+        undo_but.grid(row=0, column=1)
 
         valid_but = Button(self.window, text="Valid", font=FONT, command=self.is_valid)
-        valid_but.grid(row=0, column=3)
+        valid_but.grid(row=0, column=2)
 
-        for row in range(1, 10):
-            for col in range(1, 10):
+        for row in range(9):
+            for col in range(9):
 
-                if row in (1,2,3,7,8,9) and col in (4,5,6) or row in (4,5,6) and col in (1,2,3,7,8,9):
-                    colour = "#FF99D7"
+                if row in (0,1,2,6,7,8) and col in (3,4,5) or row in (3,4,5) and col in (0,1,2,6,7,8):
+                    colour = "#94DAFF"
                 else:
-                    colour = "#FFD372"
+                    colour = "#94B3FD" # outisde - you want darker on the outside 
                     
 
                 frame = Frame(self.window, width=10, height=10, padx=5, pady=5, bg=colour)
@@ -46,7 +47,7 @@ class Gui:
                     self.game_button_dict[(row, col)] = game_buttons
 
                 else:
-                    starting_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, text=start_text, font=FONT, command=lambda row=row, col=col: self.update_num(row, col))
+                    starting_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, text=start_text, font=FONT)
                     starting_buttons.pack()
                     starting_buttons["state"] = DISABLED
                     self.starting_button_dict[(row, col)] = game_buttons
@@ -55,9 +56,9 @@ class Gui:
         empty_space = Label(self.window, text="")
         empty_space.grid(row=11, column=1)
 
-        for i in range(1, 10):
+        for i in range(1,10):
             num_button = Button(self.window, width=4, height=2, padx=0, pady=0, text=i, font=FONT, command=lambda i=i: self.set_selected_num(i))
-            num_button.grid(row=12, column=i)
+            num_button.grid(row=12, column=i-1)
             # lambda i=i means: it stores the value of i at the time your lambda is defined, instead of waiting to look up the value of i later when it will be equal to 9 every time.
 
             self.num_button_dict[i] = num_button
@@ -75,17 +76,25 @@ class Gui:
 
 
     def update_num(self, row, col):
-        num = self.get_selected_num()
-        self.board.update(num, row, col)
-        self.game_button_dict[(row, col)].config(text=num)
+        try:
+            num = self.get_selected_num()
+        except:
+            messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
+        else:
+            self.board.update(num, row, col)
+            self.game_button_dict[(row, col)].config(text=num)
 
-        self.numbers_stack.push([(row,col), num])
+            self.numbers_stack.push([(row,col), num])
  
 
     def undo(self):
-        row, col = self.numbers_stack.pop()[0]
-        self.board.reset_value(row, col)
-        self.game_button_dict[(row, col)].config(text="")
+        try:
+            row, col = self.numbers_stack.pop()[0]
+        except:
+            messagebox.showerror(title="Undo Error", message="You have not placed anything that you can undo")
+        else:
+            self.board.reset_value(row, col)
+            self.game_button_dict[(row, col)].config(text="")
 
 
     def is_valid(self):
@@ -97,6 +106,10 @@ class Gui:
             self.game_button_dict[button].config(text="")
 
         self.board.board_clear()
+        
+        # Clears stack when the board is cleared
+        while not self.numbers_stack.is_empty():
+            self.numbers_stack.pop()
 
  
 if __name__ == "__main__":

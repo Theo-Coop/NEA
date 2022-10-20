@@ -36,7 +36,8 @@ class Stack:
 #         stack.push([(r,c), 0])
 
 
-# # for i in range(9):
-# #     print(stack.pop())
-# data = stack.pop()[0][1]
-# print(data)
+# while not stack.is_empty():
+#     stack.pop()
+
+# print("finished")
+# print(stack.pop())
