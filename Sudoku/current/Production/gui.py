@@ -54,7 +54,7 @@ class Gui:
                     starting_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, text=start_text, font=FONT)
                     starting_buttons.pack()
                     starting_buttons["state"] = DISABLED
-                    self.starting_button_dict[(row, col)] = game_buttons
+                    self.starting_button_dict[(row, col)] = starting_buttons
                     
 
         empty_space = Label(self.window, text="")
@@ -111,10 +111,6 @@ class Gui:
     def all_valid(self):
         print(self.board.whole_board_valid())
 
-    
-    def is_valid(self, num, row, col):
-        return self.board.num_valid(num, row, col)
-
 
     def clear(self):
         for i in range(1, 10):
@@ -145,7 +141,7 @@ class Gui:
             row, col = find[0], find[1]
 
         for i in range(1, 10):
-            if self.is_valid(i, row, col):
+            if self.board.num_valid(i, row, col):
                 self.board.editable_board[row][col] = i
 
                 self.window.update()
