@@ -7,27 +7,33 @@ from copy import deepcopy
 
 class Board:
     def __init__(self):
-        # self.STARTING_BOARD = [
-        #             [0,7,5,0,0,0,0,1,6],
-        #             [2,0,0,3,0,0,0,0,0],
-        #             [0,0,0,0,0,1,7,0,2],
-        #             [0,2,3,1,0,0,4,0,0],
-        #             [0,0,0,0,0,7,0,6,0],
-        #             [7,0,9,4,0,5,0,0,0],
-        #             [5,3,8,0,1,4,9,0,7],
-        #             [1,0,7,0,2,8,6,3,4],
-        #             [0,0,0,0,9,3,0,5,0]
-        #                 ]
+        self.DEFAULT_BOARD = [
+                    [0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0]
+                        ]
 
+        self.editable_board = deepcopy(self.DEFAULT_BOARD)
+
+        
+
+    def board_api_call(self):
         url = "https://sugoku.herokuapp.com/board?difficulty=easy"
         response = requests.get(url=url).json()
 
         self.STARTING_BOARD = response["board"]
-
         print(self.STARTING_BOARD)
 
         self.board_clear()
-        
+
+        return self.STARTING_BOARD
+
 
     def update(self, num, r, c):
         self.editable_board[r][c] = num
@@ -52,6 +58,7 @@ class Board:
                     return (r, c)
 
         return False # There are no empty cells
+
     
     def num_valid(self, number, r, c):
         # Check row

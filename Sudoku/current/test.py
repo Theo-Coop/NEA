@@ -18,8 +18,12 @@
 # print(this.og)
 
 
-data = [(2,3), 4]
+dicts = {
+    (1,2): "hello",
+    (1,3): "ez"
+}
 
-row, col = data[0]
-print(row)
-print(col)
+test = (25,6)
+
+if test not in dicts:
+    print("yess")

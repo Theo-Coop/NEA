@@ -12,8 +12,7 @@ class Gui:
         self.window = Tk()
         self.window.title("Sudoku")
 
-        self.game_button_dict = {}
-        self.starting_button_dict = {}
+        self.all_cells_dict = {}
         self.num_button_dict = {}
 
         self.board = Board()
@@ -32,6 +31,12 @@ class Gui:
         solve = Button(self.window, text="Solve", font=FONT, command=self.initialise_solve)
         solve.grid(row=0, column=3)
 
+        generate_but = Button(self.window, text="Generate", font=FONT, command=self.populate_board)
+        generate_but.grid(row=0, column=4, columnspan=2)
+
+        wipe_but = Button(self.window, text="Wipe", font=FONT, command=self.wipe)
+        wipe_but.grid(row=0, column=6)
+
         for row in range(9):
             for col in range(9):
 
@@ -44,18 +49,22 @@ class Gui:
                 frame = Frame(self.window, width=10, height=10, padx=5, pady=5, bg=colour)
                 frame.grid(row=row+1, column=col)
 
-                start_text = self.board.get_num(row, col)
-                if start_text == 0:
-                    game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="blue", font=FONT, command=lambda row=row, col=col: self.player_update_num(row, col))
-                    game_buttons.pack()
-                    self.game_button_dict[(row, col)] = game_buttons
+                # start_text = self.board.get_num(row, col)
+                # if start_text == 0:
+                #     game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="blue", font=FONT, command=lambda row=row, col=col: self.player_update_num(row, col))
+                #     game_buttons.pack()
+                #     self.game_button_dict[(row, col)] = game_buttons
 
-                else:
-                    starting_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, text=start_text, font=FONT)
-                    starting_buttons.pack()
-                    starting_buttons["state"] = DISABLED
-                    self.starting_button_dict[(row, col)] = starting_buttons
-                    
+                # else:
+                #     starting_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, text=start_text, font=FONT)
+                #     starting_buttons.pack()
+                #     starting_buttons["state"] = DISABLED
+                #     self.starting_button_dict[(row, col)] = starting_buttons
+
+                game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="blue", font=FONT, command=lambda row=row, col=col: self.player_update_num(row, col))
+                game_buttons.pack()
+                self.all_cells_dict[(row, col)] = game_buttons
+                
 
         empty_space = Label(self.window, text="")
         empty_space.grid(row=11, column=1)
@@ -67,8 +76,32 @@ class Gui:
 
             self.num_button_dict[i] = num_button
 
-
         self.window.mainloop()
+
+    
+    def wipe(self):
+        # self.board.board_clear()
+        self.generated_buttons_dict = {}
+
+        for button in self.all_cells_dict:
+            self.all_cells_dict[button].config(text="")
+            self.all_cells_dict[button]["state"] = NORMAL
+
+        self.num_buttons_normal()
+    
+    
+    def populate_board(self):
+        self.wipe()
+        BOARD_GENERATED = self.board.board_api_call()
+        for row in range(9):
+            for col in range(9):
+                num = BOARD_GENERATED[row][col]
+                if num != 0:
+                    self.generated_buttons_dict[(row, col)] = self.all_cells_dict[(row, col)]
+                    self.generated_buttons_dict[(row, col)].config(text=num)
+                    self.generated_buttons_dict[(row, col)]["state"] = DISABLED
+                # else:
+                #     self.game_buttons_dict[(row, col)] = self.all_cells_dict[(row, col)]
 
 
     def set_selected_num(self, num):
@@ -82,13 +115,13 @@ class Gui:
             messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
         else:
             self.board.update(num, row, col)
-            self.game_button_dict[(row, col)].config(text=num, foreground="blue")
+            self.all_cells_dict[(row, col)].config(text=num, foreground="blue")
 
             self.numbers_stack.push([(row,col), num])
 
     
     def solver_update_num(self, num, row, col, colour):
-        self.game_button_dict[(row, col)].config(text=num, foreground=colour)
+        self.all_cells_dict[(row, col)].config(text=num, foreground=colour)
 
 
     def nums_select_disable(self):  # Use this after computer has solved board so user cannot edit the board
@@ -105,19 +138,25 @@ class Gui:
             messagebox.showerror(title="Undo Error", message="You have not placed anything that you can undo")
         else:
             self.board.reset_value(row, col)
-            self.game_button_dict[(row, col)].config(text="")
+            self.all_cells_dict[(row, col)].config(text="")
 
 
     def all_valid(self):
         print(self.board.whole_board_valid())
 
+    
+    def num_buttons_normal(self):
+        for button in self.num_button_dict:
+            self.num_button_dict[button]["state"] = NORMAL
+
 
     def clear(self):
-        for i in range(1, 10):
-            self.num_button_dict[i]["state"] = NORMAL
+        self.num_buttons_normal()
 
-        for button in self.game_button_dict:
-            self.game_button_dict[button].config(text="")
+        for row in range(9):
+            for column in range(9):
+                if (row, column) not in self.generated_buttons_dict:
+                    self.all_cells_dict[(row, column)].config(text="")
 
         self.board.board_clear()
         
@@ -126,7 +165,7 @@ class Gui:
             self.numbers_stack.pop()
 
 
-    def initialise_solve(self):
+    def initialise_solve(self): # This function is necessary because if you did self.clear() in the solve() function it would be called too much as self.solve() is called recursively
         self.clear() # Clears the board
         self.solve()
     
