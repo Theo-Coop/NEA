@@ -194,7 +194,7 @@ class Gui:
                     self.board.editable_board[row][col] = 0
 
                     self.window.update()
-                    time.sleep(0)
+                    # time.sleep(0)
                     self.solver_update_num("-", row, col, "red")
                     
 

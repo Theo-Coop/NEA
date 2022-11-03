@@ -16,44 +16,62 @@ class hidden(WindowTemplate):
         super().__init__()
         self.label = Label(self.window, text="Hidden").pack()
         self.window.withdraw()
-        Window1()
+        default(None)
 
         self.window.mainloop()
 
         
 
-class Window1(WindowTemplate):
-    def __init__(self):
+class default(WindowTemplate):
+    def __init__(self, info):
         super().__init__()
         self.label = Label(self.window, text="Page 1").pack()
 
-        self.but = Button(self.window, text="press for page 2", command=self.buttonpress).pack()
+        if info:
+            self.label = Label(self.window, text=f"Info: {info}")
+
+        self.but = Button(self.window, text="press for input", command=self.buttonpress).pack()
 
 
 
     def buttonpress(self):
-        Window2()
+        inputs()
         self.close()
 
 
 
-class Window2(WindowTemplate):
+class inputs(WindowTemplate):
     def __init__(self):
         super().__init__()
-        self.label = Label(self.window, text="Page 2").pack()
 
         self.but = Button(self.window, text="press for page 1", command=self.buttonpress).pack()
+
+
+        self.input_one = Entry(self.window)
+        self.input_one.pack()
+
+        self.submit = Button(self.window, text="submit", command=self.get_info)
+        self.submit.pack()
 
         self.end = Button(self.window, text="Quit", command=self.quit).pack()
 
 
+    def get_info(self):
+        self.info = self.input_one.get()
+        print(self.info)
+
     def buttonpress(self):
-        Window1()
+        if self.info:
+            default(self.info)
+        else:
+            default("")
+
         self.close()
 
     def quit(self):
         # self.window.quit()
         exit() # Either or
+
 
 
 
