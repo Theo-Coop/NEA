@@ -3,7 +3,7 @@ from tkinter import *
 
 class WindowTemplate:
     def __init__(self):
-        self.window = Tk()
+        self.window = Toplevel()
         self.window.geometry("250x250")
         
 
@@ -11,9 +11,9 @@ class WindowTemplate:
         self.window.destroy()
 
 
-class hidden(WindowTemplate):
+class hidden:
     def __init__(self):
-        super().__init__()
+        self.window = Tk()
         self.label = Label(self.window, text="Hidden").pack()
         self.window.withdraw()
         default(None)
@@ -28,7 +28,7 @@ class default(WindowTemplate):
         self.label = Label(self.window, text="Page 1").pack()
 
         if info:
-            self.label = Label(self.window, text=f"Info: {info}")
+            self.label = Label(self.window, text=f"Info: {info}").pack()
 
         self.but = Button(self.window, text="press for input", command=self.buttonpress).pack()
 
@@ -43,7 +43,7 @@ class default(WindowTemplate):
 class inputs(WindowTemplate):
     def __init__(self):
         super().__init__()
-
+        self.info = None
         self.but = Button(self.window, text="press for page 1", command=self.buttonpress).pack()
 
 

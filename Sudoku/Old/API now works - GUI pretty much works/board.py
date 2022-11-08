@@ -28,7 +28,7 @@ class Board:
         response = requests.get(url=url).json()
 
         self.STARTING_BOARD = response["board"]
-        print(self.STARTING_BOARD)
+        
 
         self.board_clear()
 

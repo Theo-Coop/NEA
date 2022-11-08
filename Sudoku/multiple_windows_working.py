@@ -3,7 +3,7 @@ from tkinter import *
 
 class WindowTemplate:
     def __init__(self):
-        self.window = Tk()
+        self.window = Toplevel()
         self.window.geometry("250x250")
         
 
@@ -11,9 +11,9 @@ class WindowTemplate:
         self.window.destroy()
 
 
-class hidden(WindowTemplate):
+class hidden:
     def __init__(self):
-        super().__init__()
+        self.window = Tk()
         self.label = Label(self.window, text="Hidden").pack()
         self.window.withdraw()
         Window1()

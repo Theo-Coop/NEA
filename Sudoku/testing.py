@@ -4,17 +4,10 @@ from tkinter import *
 root = Tk()
 root.geometry("250x250")
 
-def get_info():
-    info = input_one.get()
-    print(info)
+canvas = Canvas(root, width=200, height=200)
+canvas.pack()
 
-
-input_one = Entry(root)
-input_one.pack()
-
-submit = Button(root, text="submit", command=get_info)
-submit.pack()
-
-
+img = PhotoImage(master=canvas, file="sudoku_gif.gif")
+canvas.create_image(100, 100, image=img)
 
 root.mainloop()
