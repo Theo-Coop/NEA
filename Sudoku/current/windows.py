@@ -1,10 +1,10 @@
 from tkinter import *
+import free_play
 
 
 class WindowTemplate:
     def __init__(self):
         self.window = Toplevel()
-        self.window.geometry("500x500")
 
         self.FONT = ("Arial", 15, "bold")
 
@@ -32,7 +32,7 @@ class Welcome(WindowTemplate):
         self.window.geometry("225x200")
 
         self.new_game_but = Button(self.window, text="New game", font=self.FONT, width=10).place(x=45, y=5)
-        self.free_play_but = Button(self.window, text="Free play", font=self.FONT, width=10).place(x=45, y=55)
+        self.free_play_but = Button(self.window, text="Free play", font=self.FONT, width=10, command=self.open_freeplay).place(x=45, y=55)
         self.rules_but = Button(self.window, text="How to play", font=self.FONT, width=10, command=self.open_rules).place(x=45, y=105)
 
         self.quit_but = Button(self.window, text="Quit", font=("Arial", 12, "bold"), width=8, command=self.quit).place(x=65, y=155)
@@ -41,6 +41,10 @@ class Welcome(WindowTemplate):
     def open_rules(self):
         self.close()
         Rules()
+
+    def open_freeplay(self):
+        self.close()
+        free_play.FreePlayWindow()
 
 
 class Rules(WindowTemplate):
@@ -64,6 +68,8 @@ class Rules(WindowTemplate):
     def welcome_page(self):
         Welcome()
         self.close()
+
+
 
 
 if __name__ == "__main__":
