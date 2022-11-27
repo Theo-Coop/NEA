@@ -15,6 +15,7 @@ class FreePlayWindow(windows.WindowTemplate):
         self.cells_dict = {}
         self.nums_dict = {}
         self.utilities_dict = {}
+        self.solving_speed = 0 # Default value
 
         
         self.board = board.FreePlayBoard()
@@ -40,6 +41,11 @@ class FreePlayWindow(windows.WindowTemplate):
         self.solve_but.grid(row=0, column=5)
         self.utilities_dict["solve"] = self.solve_but
 
+        self.slider_val = DoubleVar()
+        self.speed_slider = Scale(self.window, from_=0, to=100, orient="horizontal", command=self.slider_changed, variable=self.slider_val)
+        self.speed_slider.grid(row=0, column=6, columnspan=3)
+        self.disable_slider()
+        
 
         for row in range(9):
             for col in range(9):
@@ -76,6 +82,10 @@ class FreePlayWindow(windows.WindowTemplate):
         
     def set_selected_num(self, num):
         self.selected_num = num
+
+    
+    def slider_changed(self, event):
+        self.solving_speed = self.slider_val.get() / 1000
 
 
     def player_update_num(self, row, col):
@@ -134,7 +144,6 @@ class FreePlayWindow(windows.WindowTemplate):
             self.utilities_dict[button]["state"] = DISABLED
 
         self.disable_num_buttons()
-        
 
     
     def enable_utilities(self):    # Use this to enable the "utilities" buttons when solving is finished
@@ -153,19 +162,29 @@ class FreePlayWindow(windows.WindowTemplate):
         for cell in self.cells_dict:
             self.cells_dict[cell]["state"] = NORMAL
 
+    
+    def disable_slider(self):
+        self.speed_slider["state"] = DISABLED
 
     
+    def enable_slider(self):
+        self.speed_slider["state"] = NORMAL
+
+
+
     def solve(self):
         if self.board.whole_board_valid():
             self.numbers_stack.clear_stack()
             self.disable_game_cells()
             self.disable_utilities()
+            self.enable_slider()
 
             find = self.board.find_empty()
 
             if find == False:
                 # Solver has finished
                 self.enable_utilities()
+                self.enable_slider()
                 return True
             else:
                 row, col = find[0], find[1]
@@ -175,7 +194,8 @@ class FreePlayWindow(windows.WindowTemplate):
                     self.board.board[row][col] = i
 
                     self.window.update()
-                    time.sleep(0)
+                    if self.solving_speed != 0:
+                        time.sleep(self.solving_speed)
                     self.solver_update_num(i, row, col, "green")
 
 
@@ -185,7 +205,6 @@ class FreePlayWindow(windows.WindowTemplate):
                         self.board.board[row][col] = 0
 
                         self.window.update()
-                        time.sleep(0)
                         self.solver_update_num("-", row, col, "red")
         else:
             messagebox.showerror(title="Error", message="Sorry, the current board is unsolvable")
