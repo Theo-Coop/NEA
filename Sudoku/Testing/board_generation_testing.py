@@ -1,4 +1,5 @@
 import random
+from itertools import chain
 
 def print_board(board):
     for i in range(len(board)):
@@ -55,11 +56,6 @@ def whole_board_valid(board): #Checks if the whole current board is valid
 
 
 
-
-
-board = [[0 for _ in range(9)] for _ in range(9)]
-
-
 def shuffle_along():
     # This modifies the board outside the function
     # shuffling_row = [5, 3, 4, 1, 7, 6, 2, 9, 8] # say this is what was shuffled for example
@@ -79,40 +75,64 @@ def shuffle_along():
         board[i] = shuffling_row.copy()
 
 
-shuffle_along()
-print_board(board)
-
 
 # Switches all the rows
-copy_board = board.copy()
+def row_switch():
+    copy_board = board.copy()
 
-for i in range(0, 7, 3): # Goes 0, 3, 6
-    # Switch 2 rows
-    switch_perms = [0, 1, 2]
-    random.shuffle(switch_perms)
-    
-    for j in range(3):
-        board[i+j] = copy_board[switch_perms[j]+i]
-
-
-
-
-# Switch columns
-orders = [
-    [2,0,1],
-    [1,2,0],
-    [2,1,0]
-]
-# These are 3 premade orders for the columns to avoid any repetitions of column swapping
-
-random.shuffle(orders)
-print(orders)
-
-for row in board:
-    for i in range(0, 7, 3): # 0, 3, 6
-        row[0+i], row[1+i], row[2+i] = row[orders[i//3][0]+i], row[orders[i//3][1]+i], row[orders[i//3][2]+i]
+    for i in range(0, 7, 3): # Goes 0, 3, 6
+        # Switch 2 rows
+        switch_perms = [0, 1, 2]
+        random.shuffle(switch_perms)
+        
+        for j in range(3):
+            board[i+j] = copy_board[switch_perms[j]+i]
 
 
-print()
+ # Switch columns
+def column_switch():
+    orders = [
+        [2,0,1],
+        [1,2,0],
+        [2,1,0]
+    ]
+    # These are 3 premade orders for the columns to avoid any repetitions of column swapping
+    # This switches columns within each 3x3 "box"
+
+    random.shuffle(orders)
+
+    for row in board:
+        for i in range(0, 7, 3): # 0, 3, 6
+            row[0+i], row[1+i], row[2+i] = row[orders[i//3][0]+i], row[orders[i//3][1]+i], row[orders[i//3][2]+i]
+
+
+
+    # This switches other columns which contain the same numbers
+    flatten_list = list(chain.from_iterable(orders))
+
+    indexes = {
+        0: [],
+        1: [],
+        2: []
+    }
+
+    # Gets the indexes for each of the same "columns" and stores them in a dictionary
+    for i in range(len(flatten_list)):
+        indexes[flatten_list[i]].append(i)
+
+    print(indexes)
+
+    for row in board:
+        row[indexes[0][0]], row[indexes[0][1]] = row[indexes[0][1]], row[indexes[0][0]]
+
+
+board = [[0 for _ in range(9)] for _ in range(9)]
+shuffle_along()
+row_switch()
+column_switch()
+
+
+
+
 print_board(board)
 print(whole_board_valid(board))
