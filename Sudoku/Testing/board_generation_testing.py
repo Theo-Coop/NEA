@@ -135,18 +135,19 @@ class generatedBoard:
             row[indexes[0][0]], row[indexes[0][1]] = row[indexes[0][1]], row[indexes[0][0]]
 
 
-    # Run a million times and every board is alid
+    # Run a million times and every board is valid
     # for i in range(1000000):
     #     board = [[0 for _ in range(9)] for _ in range(9)]
     #     shuffle_along()
     #     row_switch()
     #     column_switch()
     #     if whole_board_valid(board) == False:
-    #         print("You failure")
+    #         print("Not valid)
 
     # print("done")
 
 
-board = generatedBoard()
-board.print_board()
-print(board.whole_board_valid())
+if __name__ == "__main__":
+    board = generatedBoard()
+    board.print_board()
+    print(board.whole_board_valid())
