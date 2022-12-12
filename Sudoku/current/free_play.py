@@ -11,6 +11,7 @@ class FreePlayWindow(windows.WindowTemplate):
         super().__init__()
 
         self.FONT = ("Arial", 12, "bold")
+        self.window.title("Free play")
 
         self.cells_dict = {}
         self.nums_dict = {}

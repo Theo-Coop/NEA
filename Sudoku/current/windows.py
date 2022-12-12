@@ -1,5 +1,6 @@
 from tkinter import *
 import free_play
+import new_game
 
 
 class WindowTemplate:
@@ -31,7 +32,7 @@ class Welcome(WindowTemplate):
         self.window.title("Welcome!")
         self.window.geometry("225x200")
 
-        self.new_game_but = Button(self.window, text="New game", font=self.FONT, width=10).place(x=45, y=5)
+        self.new_game_but = Button(self.window, text="New game", font=self.FONT, width=10, command=self.open_new_game).place(x=45, y=5)
         self.free_play_but = Button(self.window, text="Free play", font=self.FONT, width=10, command=self.open_freeplay).place(x=45, y=55)
         self.rules_but = Button(self.window, text="How to play", font=self.FONT, width=10, command=self.open_rules).place(x=45, y=105)
 
@@ -45,6 +46,10 @@ class Welcome(WindowTemplate):
     def open_freeplay(self):
         self.close()
         free_play.FreePlayWindow()
+
+    def open_new_game(self):
+        self.close()
+        new_game.SelectDifficuly()
 
 
 class Rules(WindowTemplate):
