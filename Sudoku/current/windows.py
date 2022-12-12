@@ -9,7 +9,6 @@ class WindowTemplate:
 
         self.FONT = ("Arial", 15, "bold")
 
-    
     def close(self):
         self.window.destroy()
 
@@ -45,7 +44,7 @@ class Welcome(WindowTemplate):
 
     def open_freeplay(self):
         self.close()
-        free_play.FreePlayWindow()
+        free_play.freePlayWindow()
 
     def open_new_game(self):
         self.close()

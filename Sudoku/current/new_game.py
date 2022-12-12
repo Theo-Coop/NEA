@@ -1,5 +1,6 @@
 from tkinter import *
 import windows
+import game_template
 
 class SelectDifficuly:
     def __init__(self):
@@ -9,11 +10,11 @@ class SelectDifficuly:
 
         self.window.title("Select difficulty")
 
-        self.easy_but = Button(self.window, text="Easy", font=self.FONT, width=10, command=lambda: self.set_difficulty("easy")).place(x=45, y=5)
-        self.medium_but = Button(self.window, text="Medium", font=self.FONT, width=10, command=lambda: self.set_difficulty("medium")).place(x=45, y=55)
-        self.hard_but = Button(self.window, text="Hard", font=self.FONT, width=10, command=lambda: self.set_difficulty("hard")).place(x=45, y=105)
+        self.easy_but = Button(self.window, text="Easy", font=self.FONT, width=8, command=lambda: self.set_difficulty("easy")).place(x=45, y=5)
+        self.medium_but = Button(self.window, text="Medium", font=self.FONT, width=8, command=lambda: self.set_difficulty("medium")).place(x=45, y=55)
+        self.hard_but = Button(self.window, text="Hard", font=self.FONT, width=8, command=lambda: self.set_difficulty("hard")).place(x=45, y=105)
 
-        self.return_but = Button(self.window, text="Return", font=("Arial", 12, "bold"), width=8, command=self.welcome_page).place(x=65, y=155)
+        self.return_but = Button(self.window, text="Return", font=("Arial", 12, "bold"), width=8, command=self.welcome_page).place(x=52, y=155)
 
     
     def close(self):
@@ -28,7 +29,10 @@ class SelectDifficuly:
         NewGame(difficulty)
 
 
-class NewGame:
-    def __init__(self, difficulty):
-        print(difficulty)
 
+
+class NewGame(game_template.gameTemplate):
+    def __init__(self, difficulty):
+        super().__init__()
+        print(difficulty)
+        windows.Welcome()
