@@ -23,7 +23,7 @@ class freePlayWindow(game_template.gameTemplate):
         self.solve_but.grid(row=1, column=11)
         self.utilities_dict["solve"] = self.solve_but
 
-        self.instant_solve_but = Button(self.window, text="Instant Solve", font=self.FONT)
+        self.instant_solve_but = Button(self.window, text="Instant Solve", font=self.FONT, command=self.instant_solve)
         self.instant_solve_but.grid(row=1, column=12, padx=20, columnspan=2)
         self.utilities_dict["instant-solve"] = self.instant_solve_but
 
@@ -94,7 +94,7 @@ class freePlayWindow(game_template.gameTemplate):
 
     
     def solver_update_num(self, num, row, col, colour):
-        self.cells_dict[(row, col)].config(text=num, disabledforeground=colour, font=self.FONT)
+        self.cells_dict[(row, col)].config(text=num, disabledforeground=colour, fg=colour, font=self.FONT)
 
     
     def disable_slider(self):
@@ -105,6 +105,19 @@ class freePlayWindow(game_template.gameTemplate):
         self.speed_slider["state"] = NORMAL
 
 
+    def instant_solve(self):
+        if self.board.whole_board_valid():
+            self.numbers_stack.clear_stack()
+            self.board.instant_solve()
+
+            for row in range(9):
+                for col in range(9):
+                    if self.cells_dict[(row, col)]["text"] == "":
+                        num = self.board.board[row][col]
+                        self.solver_update_num(num, row, col, "green")
+
+        else:
+            messagebox.showerror(title="Error", message="Sorry, the current board is unsolvable")
 
     def solve(self):
         if self.board.whole_board_valid():
@@ -138,7 +151,7 @@ class freePlayWindow(game_template.gameTemplate):
                     else:
                         self.board.board[row][col] = 0
 
-                        self.window.update()
+                        # self.window.update()
                         self.solver_update_num("-", row, col, "red")
         else:
             messagebox.showerror(title="Error", message="Sorry, the current board is unsolvable")

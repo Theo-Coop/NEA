@@ -56,18 +56,38 @@ class FreePlayBoard:
 
             return True
 
-    # def print_board(self, board):
-    #         print()
-    #         print()
-    #         for i in range(len(board)):
-    #             if i % 3 == 0 and i != 0:
-    #                 print("- - - - - - - - - - - - ")
-                
-    #             for j in range(len(board[0])):
-    #                 if j % 3 == 0 and j != 0:
-    #                     print(" | ", end="")
+    
+    def instant_solve(self):
+        find = self.find_empty()
+        if find == False:
+            return True
+        else:
+            row, col = find[0], find[1]
 
-    #                 if j == 8:
-    #                     print(board[i][j])
-    #                 else:
-    #                     print(str(board[i][j]) + " ", end="")
+        for i in range(1, 10):
+            if self.num_valid(i, row, col):
+                self.board[row][col] = i
+
+                if self.instant_solve():
+                    return True
+                else:
+                    self.board[row][col] = 0
+
+        return False
+
+
+    def print_board(self):
+            print()
+            print()
+            for i in range(len(self.board)):
+                if i % 3 == 0 and i != 0:
+                    print("- - - - - - - - - - - - ")
+                
+                for j in range(len(self.board[0])):
+                    if j % 3 == 0 and j != 0:
+                        print(" | ", end="")
+
+                    if j == 8:
+                        print(self.board[i][j])
+                    else:
+                        print(str(self.board[i][j]) + " ", end="")
