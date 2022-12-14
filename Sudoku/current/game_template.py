@@ -78,7 +78,7 @@ class gameTemplate:
         self.selected_num = None
 
 
-    def enable_num_buttons(self):
+    def enable_num_buttons(self):          # Use this so the player can edit the board
         for button in self.nums_dict:
             self.nums_dict[button]["state"] = NORMAL
 
