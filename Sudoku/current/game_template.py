@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-import board
+import board_class_file
 import stack
 
 class gameTemplate:
@@ -13,7 +13,7 @@ class gameTemplate:
         self.nums_dict = {}
         self.utilities_dict = {}
 
-        self.board = board.FreePlayBoard()
+        self.board_class = board_class_file.GameBoard()
         self.numbers_stack = stack.Stack()
 
 
@@ -44,6 +44,10 @@ class gameTemplate:
             self.nums_dict[i] = num_button
             # lambda i=i means: it stores the value of i at the time your lambda is defined, instead of waiting to look up the value of i later when it will be equal to 9 every time.
 
+        num_button = Button(self.window, width=4, height=2, padx=0, pady=0, font=self.FONT, command=lambda: self.set_selected_num(0))
+        num_button.grid(row=11, column=9)
+        self.nums_dict[10] = num_button
+
 
     def set_selected_num(self, num):
         self.selected_num = num
@@ -55,10 +59,15 @@ class gameTemplate:
         except:
             messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
         else:
-            self.board.update(num, row, col)
-            self.cells_dict[(row, col)].config(text=num, foreground="blue", disabledforeground="blue", font=self.FONT)
+            self.board_class.update(num, row, col)
+            if num != 0: # If the button is not the "clear" button
+                self.cells_dict[(row, col)].config(text=num, foreground="blue", disabledforeground="blue", font=self.FONT)
+                self.numbers_stack.push([(row,col), num])
 
-            self.numbers_stack.push([(row,col), num])
+            else: # If the button is the "clear" button, put empty text on the game grid
+                self.cells_dict[(row, col)].config(text="", foreground="blue", disabledforeground="blue", font=self.FONT)
+
+
 
 
     def undo(self):
@@ -67,7 +76,7 @@ class gameTemplate:
         except:
             messagebox.showerror(title="Undo Error", message="You have not placed anything that you can undo")
         else:
-            self.board.reset_value(row, col)
+            self.board_class.reset_value(row, col)
             self.cells_dict[(row, col)].config(text="") 
 
 

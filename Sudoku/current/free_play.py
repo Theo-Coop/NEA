@@ -81,7 +81,7 @@ class freePlayWindow(game_template.gameTemplate):
 
 
     def wipe(self):
-        self.board.new_board()
+        self.board_class.new_board()
         
         self.enable_num_buttons()
         self.enable_game_cells()
@@ -106,27 +106,27 @@ class freePlayWindow(game_template.gameTemplate):
 
 
     def instant_solve(self):
-        if self.board.whole_board_valid():
+        if self.board_class.whole_board_valid():
             self.numbers_stack.clear_stack()
-            self.board.instant_solve()
+            self.board_class.instant_solve()
 
             for row in range(9):
                 for col in range(9):
                     if self.cells_dict[(row, col)]["text"] == "":
-                        num = self.board.board[row][col]
+                        num = self.board_class.game_board[row][col]
                         self.solver_update_num(num, row, col, "green")
 
         else:
             messagebox.showerror(title="Error", message="Sorry, the current board is unsolvable")
 
     def solve(self):
-        if self.board.whole_board_valid():
+        if self.board_class.whole_board_valid():
             self.numbers_stack.clear_stack()
             self.disable_game_cells()
             self.disable_utilities()
             self.enable_slider()
 
-            find = self.board.find_empty()
+            find = self.board_class.find_empty()
 
             if find == False:
                 # Solver has finished
@@ -137,8 +137,8 @@ class freePlayWindow(game_template.gameTemplate):
                 row, col = find[0], find[1]
 
             for i in range(1, 10):
-                if self.board.num_valid(i, row, col):
-                    self.board.board[row][col] = i
+                if self.board_class.num_valid(i, row, col):
+                    self.board_class.game_board[row][col] = i
 
                     self.window.update()
                     if self.solving_speed != 0:
@@ -149,7 +149,7 @@ class freePlayWindow(game_template.gameTemplate):
                     if self.solve():
                         return True
                     else:
-                        self.board.board[row][col] = 0
+                        self.board_class.game_board[row][col] = 0
 
                         # self.window.update()
                         self.solver_update_num("-", row, col, "red")

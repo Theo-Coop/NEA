@@ -1,6 +1,9 @@
 from tkinter import *
+from copy import deepcopy
 import windows
 import game_template
+import generate_board
+
 
 class SelectDifficuly:
     def __init__(self):
@@ -34,5 +37,32 @@ class SelectDifficuly:
 class NewGame(game_template.gameTemplate):
     def __init__(self, difficulty):
         super().__init__()
-        print(difficulty)
-        windows.Welcome()
+        self.STARTING_BOARD = generate_board.GenerateBoard(difficulty).starting_board     # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
+
+
+        self.board_class.game_board = deepcopy(self.STARTING_BOARD)       # Changes the game_board variable in the GameBoard class in the board_class_file.py
+
+        print(self.STARTING_BOARD)
+
+        self.populate_board()
+
+    
+    def wipe(self):
+        self.generated_buttons_dict = {}
+
+        self.numbers_stack.clear_stack()
+
+        for button in self.cells_dict:
+            self.cells_dict[button].config(text="")
+            self.cells_dict[button]["state"] = NORMAL
+
+
+    def populate_board(self):
+        self.wipe()
+        for row in range(9):
+            for col in range(9):
+                num = self.STARTING_BOARD[row][col]
+                if num != 0:
+                    self.generated_buttons_dict[(row, col)] = self.cells_dict[(row, col)]
+                    self.generated_buttons_dict[(row, col)].config(text=num)
+                    self.generated_buttons_dict[(row, col)]["state"] = DISABLED
