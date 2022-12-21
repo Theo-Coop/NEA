@@ -68,6 +68,12 @@ class gameTemplate:
                 self.cells_dict[(row, col)].config(text="", foreground="blue", disabledforeground="blue", font=self.FONT)
 
 
+    def quit(self):
+        exit()
+
+    
+    def close(self):
+        self.window.destroy()
 
 
     def undo(self):

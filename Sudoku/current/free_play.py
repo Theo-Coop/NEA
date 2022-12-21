@@ -12,9 +12,9 @@ class freePlayWindow(game_template.gameTemplate):
 
         self.solving_speed = 0 # Default value
 
-        
-        self.grid_10 = Label(self.window, text="      ")
-        self.grid_10.grid(row=0, column=10)
+        # Don't need if "clear" button is there
+        # self.grid_10_blank_space = Label(self.window, text="      ")
+        # self.grid_10_blank_space.grid(row=0, column=10)
 
         self.solve_label = Label(self.window, text="Solve options", font=self.FONT)
         self.solve_label.grid(row=0, column=11, columnspan=3)
@@ -60,15 +60,6 @@ class freePlayWindow(game_template.gameTemplate):
         self.return_but.grid(row=8, column=12, columnspan=2)
         self.utilities_dict["return"] = self.return_but
 
-
-
-
-    def quit(self):
-        exit()
-
-    
-    def close(self):
-        self.window.destroy()
 
 
     def welcome_page(self):
@@ -118,6 +109,7 @@ class freePlayWindow(game_template.gameTemplate):
 
         else:
             messagebox.showerror(title="Error", message="Sorry, the current board is unsolvable")
+
 
     def solve(self):
         if self.board_class.whole_board_valid():

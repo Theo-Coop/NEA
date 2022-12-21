@@ -15,6 +15,13 @@ class GameBoard:
         self.game_board[r][c] = 0 
 
 
+    def clear_user_inputs(self, start_board):
+        for r in range(9):
+            for c in range(9):
+                if self.game_board[r][c] != 0 and start_board[r][c] == 0:
+                    self.game_board[r][c] = 0
+
+
     def find_empty(self):
         for r in range(9):
             for c in range(9):
