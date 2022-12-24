@@ -21,9 +21,9 @@ class gameTemplate:
             for col in range(9):
 
                 if row in (0,1,2,6,7,8) and col in (3,4,5) or row in (3,4,5) and col in (0,1,2,6,7,8):
-                    colour = "#FCE38A"
+                    colour = "#6DB7CA"
                 else:
-                    colour = "#FF75A0" # outisde - you want darker on the outside 
+                    colour = "#6163D3" # outisde - you want darker on the outside 
                     
 
                 frame = Frame(self.window, width=10, height=10, padx=5, pady=5, bg=colour)

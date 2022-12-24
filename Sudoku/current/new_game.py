@@ -37,6 +37,9 @@ class SelectDifficuly:
 class NewGame(game_template.gameTemplate):
     def __init__(self, difficulty):
         super().__init__()
+
+        self.window.title(f"New Game - {difficulty.capitalize()} difficulty")
+        
         self.STARTING_BOARD = generate_board.GenerateBoard(difficulty).starting_board     # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
 
 

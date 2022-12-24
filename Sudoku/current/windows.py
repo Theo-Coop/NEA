@@ -1,4 +1,5 @@
 from tkinter import *
+import requests
 import free_play
 import new_game
 
@@ -57,12 +58,8 @@ class Rules(WindowTemplate):
         self.window.title("Rules of Sudoku")
         self.window.geometry("300x450")
 
-        text = ("Sudoku is played in a grid of 9x9, which is further split into nine 3x3 squares. "
-                    "Each square, row, and column, need to contain the numbers 1 through 9, without "
-                    "repeating any numbers in the row, column, or square. The puzzles come with a minimum "
-                    "of 17 pre-filled numbers for only one solution. "
-                    "To play this game, first press a number below the board and press the cell on the board "
-                    "which you want to place the number in.")
+        api_text = requests.get(url="https://api.npoint.io/683413d787a24bac2915").json()
+        text = api_text["Sudoku"]["Rules"]
 
         self.label = Label(self.window, text=text, font=("Arial", 12, "bold"), wraplength=200).place(x=50, y=10)
         
