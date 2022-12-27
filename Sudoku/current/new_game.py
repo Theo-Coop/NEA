@@ -5,47 +5,53 @@ import game_template
 import generate_board
 
 
+# Select Difficulty window
 class SelectDifficuly:
     def __init__(self):
-        self.window = Toplevel()
+        self.window = Toplevel() # Create a new Tkinter window
 
-        self.FONT = ("Arial", 15, "bold")
+        self.FONT = ("Arial", 15, "bold") # Set the window font size
 
-        self.window.title("Select difficulty")
+        self.window.title("Select difficulty") # Set the window title
 
+        # Difficulty buttons which call the set_difficulty() function
         self.easy_but = Button(self.window, text="Easy", font=self.FONT, width=8, command=lambda: self.set_difficulty("easy")).place(x=45, y=5)
         self.medium_but = Button(self.window, text="Medium", font=self.FONT, width=8, command=lambda: self.set_difficulty("medium")).place(x=45, y=55)
         self.hard_but = Button(self.window, text="Hard", font=self.FONT, width=8, command=lambda: self.set_difficulty("hard")).place(x=45, y=105)
 
+        # Return button
         self.return_but = Button(self.window, text="Return", font=("Arial", 12, "bold"), width=8, command=self.welcome_page).place(x=52, y=155)
 
     
+    # Close the window
     def close(self):
         self.window.destroy()
 
+    # Return to the welcome page
     def welcome_page(self):
         self.close()
         windows.Welcome()
 
+    # Call the NewGame class with the desired difficulty
     def set_difficulty(self, difficulty):
         self.close()
         NewGame(difficulty)
 
 
 
-
-class NewGame(game_template.gameTemplate):
+# NewGame window
+class NewGame(game_template.GameTemplate):
     def __init__(self, difficulty):
-        super().__init__()
+        super().__init__() # Inherits from the GameTemplate class
 
-        self.window.title(f"New Game - {difficulty.capitalize()} difficulty")
+        self.window.title(f"New Game - {difficulty.capitalize()} difficulty") # Sets the window title
         
         self.STARTING_BOARD = generate_board.GenerateBoard(difficulty).starting_board     # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
 
 
         self.board_class.game_board = deepcopy(self.STARTING_BOARD)       # Changes the game_board variable in the GameBoard class in the board_class_file.py
 
-        self.populate_board()
+        self.populate_board() # Populate the board with numbers
 
         # Buttons
         self.game_options_label = Label(self.window, text="Game options", font=self.FONT)
@@ -72,6 +78,7 @@ class NewGame(game_template.gameTemplate):
         self.utilities_dict["return"] = self.return_but
 
 
+    # Function to close the window and return to the select difficulty page
     def select_diffficulty(self):
         self.close()
         SelectDifficuly()
@@ -82,9 +89,9 @@ class NewGame(game_template.gameTemplate):
         for row in range(9):
             for column in range(9):
                 if (row, column) not in self.generated_buttons_dict:
-                    self.cells_dict[(row, column)].config(text="")
+                    self.cells_dict[(row, column)].config(text="") # Clears the GUI board's numbers
 
-        self.board_class.clear_user_inputs(self.STARTING_BOARD)
+        self.board_class.clear_user_inputs(self.STARTING_BOARD) # Uses the board_class clear user inputs to clear the board of the user's numbers
         
         # Clears stack when the board is cleared
         self.numbers_stack.clear_stack()
@@ -92,15 +99,16 @@ class NewGame(game_template.gameTemplate):
     
     # Wipes entire board
     def wipe(self):
-        self.generated_buttons_dict = {}
+        self.generated_buttons_dict = {} # Reset the buttons dictionary
 
-        self.numbers_stack.clear_stack()
+        self.numbers_stack.clear_stack() # Clear the stack
 
         for button in self.cells_dict:
-            self.cells_dict[button].config(text="")
-            self.cells_dict[button]["state"] = NORMAL
+            self.cells_dict[button].config(text="") # Make all the buttons have no text
+            self.cells_dict[button]["state"] = NORMAL # Make the buttons able to be pressed
 
-
+    
+    # Function to populate the board with the numbers from the generated sudoku
     def populate_board(self):
         self.wipe()
         for row in range(9):
@@ -108,5 +116,5 @@ class NewGame(game_template.gameTemplate):
                 num = self.STARTING_BOARD[row][col]
                 if num != 0:
                     self.generated_buttons_dict[(row, col)] = self.cells_dict[(row, col)]
-                    self.generated_buttons_dict[(row, col)].config(text=num)
-                    self.generated_buttons_dict[(row, col)]["state"] = DISABLED
+                    self.generated_buttons_dict[(row, col)].config(text=num) # Put the number on the board
+                    self.generated_buttons_dict[(row, col)]["state"] = DISABLED # Disable the starting numbers buttons so the user cannot overwrite them

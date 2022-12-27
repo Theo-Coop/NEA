@@ -3,7 +3,7 @@ from tkinter import messagebox
 import board_class_file
 import stack
 
-class gameTemplate:
+class GameTemplate:
     def __init__(self):
         self.window = Toplevel()
 
@@ -123,4 +123,4 @@ class gameTemplate:
 
 
 if __name__ == "__main__": # Just running on its own
-    gameTemplate()
+    GameTemplate()
