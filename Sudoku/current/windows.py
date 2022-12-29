@@ -96,6 +96,6 @@ class Rules(WindowTemplate):
 
 
 
-
+# This starts the program
 if __name__ == "__main__":
     hidden()

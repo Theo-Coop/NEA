@@ -4,6 +4,7 @@ import time
 import game_template
 import windows
 
+
 # The Class for the "Free Play" mode which inherits from the GameTemplte class
 class FreePlayWindow(game_template.GameTemplate):
     def __init__(self):
