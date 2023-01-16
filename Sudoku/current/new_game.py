@@ -49,7 +49,7 @@ class NewGame(game_template.GameTemplate):
         self.STARTING_BOARD = generate_board.GenerateBoard(difficulty).starting_board     # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
 
 
-        self.board_class.game_board = deepcopy(self.STARTING_BOARD)       # Changes the game_board variable in the GameBoard class in the board_class_file.py
+        self.board_class.game_board = deepcopy(self.STARTING_BOARD)       # Changes the game_board variable in the GameBoard class in the "board_class_file.py"
 
         self.populate_board() # Populate the board with numbers
 
@@ -89,9 +89,9 @@ class NewGame(game_template.GameTemplate):
         for row in range(9):
             for column in range(9):
                 if (row, column) not in self.generated_buttons_dict:
-                    self.cells_dict[(row, column)].config(text="") # Clears the GUI board's numbers
+                    self.cells_dict[(row, column)].config(text="", bg=self.BUTTON_BG_COLOUR) # Clears the GUI board's numbers
 
-        self.board_class.clear_user_inputs(self.STARTING_BOARD) # Uses the board_class clear user inputs to clear the board of the user's numbers
+        self.board_class.clear_user_inputs(self.STARTING_BOARD) # Uses the board_class "clear user inputs" function to clear the backend board of the user's numbers
         
         # Clears stack when the board is cleared
         self.numbers_stack.clear_stack()
@@ -104,7 +104,7 @@ class NewGame(game_template.GameTemplate):
         self.numbers_stack.clear_stack() # Clear the stack
 
         for button in self.cells_dict:
-            self.cells_dict[button].config(text="") # Make all the buttons have no text
+            self.cells_dict[button].config(text="", bg=self.BUTTON_BG_COLOUR) # Make all the buttons have no text
             self.cells_dict[button]["state"] = NORMAL # Make the buttons able to be pressed
 
     

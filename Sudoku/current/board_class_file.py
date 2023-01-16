@@ -16,6 +16,15 @@ class GameBoard:
         self.game_board[r][c] = 0 
 
 
+    def is_board_full(self): # Used in the New Game mode to congratulate the user upon completion of the puzzle
+        for r in range(9):
+            for c in range(9):
+                if self.game_board[r][c] == 0:
+                    return False      # The board still has empty numbers on it
+
+        return True   # The board is full
+
+
     def clear_user_inputs(self, start_board): # Used inn the New Game mode, where the numbers the user inputted
         # should be cleared, but the starting board numbers should remain
         for r in range(9):

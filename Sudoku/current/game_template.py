@@ -10,6 +10,7 @@ class GameTemplate:
         self.window = Toplevel()
 
         self.FONT = ("Arial", 12, "bold") # Sets the default font constant
+        self.BUTTON_BG_COLOUR = "#f0f0f0"
 
         # dictionaries so all certain buttons can be activated / deactivated / modified
         self.cells_dict = {}
@@ -39,7 +40,7 @@ class GameTemplate:
 
                 # Creates the game buttons
                 # The lambda function allows the rows and columns to be stored in the dictionary as well (refer to line 54)
-                game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="blue", font=self.FONT, command=lambda row=row, col=col: self.player_update_num(row, col))
+                game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT, command=lambda row=row, col=col: self.player_update_num(row, col))
                 game_buttons.pack()
                 self.cells_dict[(row, col)] = game_buttons
 
@@ -53,14 +54,14 @@ class GameTemplate:
         for i in range(1,10):
             num_button = Button(self.window, width=4, height=2, padx=0, pady=0, text=i, font=self.FONT, command=lambda i=i: self.set_selected_num(i))
             num_button.grid(row=11, column=i-1)
-            self.nums_dict[i] = num_button
+            self.nums_dict[i-1] = num_button
             # lambda i=i means: it stores the value of i at the time the lambda is defined, instead of waiting to look up the value of i later when it will be equal to 9 every time.
 
 
         # A button to clear a single button on the cell
-        single_button_clear = Button(self.window, width=4, height=2, padx=0, pady=0, font=self.FONT, command=lambda: self.set_selected_num(0))
-        single_button_clear.grid(row=11, column=9)
-        self.nums_dict[10] = single_button_clear
+        single_button_clear = Button(self.window, width=4, height=2, padx=0, pady=0, text="Erase", font=self.FONT, command=lambda: self.set_selected_num(0))
+        single_button_clear.grid(row=11, column=9, columnspan=2)
+        self.nums_dict[9] = single_button_clear
 
 
     # Set the users selected number
@@ -76,14 +77,26 @@ class GameTemplate:
         except:
             messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
         else:
-            self.board_class.update(num, row, col) # Upadte the actual board (not the GUI)
+            self.board_class.update(num, row, col) # Update the actual board (not the GUI)
 
             if num != 0: # If the button is not the "clear" button
-                self.cells_dict[(row, col)].config(text=num, foreground="blue", disabledforeground="blue", font=self.FONT)
-                self.numbers_stack.push([(row,col), num])
+                if self.board_class.num_valid(num, row, col): # If the number is actually valid
+                    bg_colour = self.BUTTON_BG_COLOUR
+                    fg_colour = "blue"
+                else:
+                    bg_colour = "red"
+                    fg_colour = "white"
+
+                self.cells_dict[(row, col)].config(text=num, foreground=fg_colour, bg=bg_colour, disabledforeground="blue", font=self.FONT)
+
+                self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
+
+                if self.board_class.is_board_full() and self.board_class.whole_board_valid(): # If the board is completed and fully valid
+                    messagebox.showinfo(title="Congratulations!", message="Congratulations, you have completed the puzzle!")
+
 
             else: # If the button is the "clear" button, put empty text on the game grid
-                self.cells_dict[(row, col)].config(text="", foreground="blue", disabledforeground="blue", font=self.FONT)
+                self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)
 
 
     # Quit the program
@@ -105,13 +118,13 @@ class GameTemplate:
             messagebox.showerror(title="Undo Error", message="You have not placed anything that you can undo")
         else:
             self.board_class.reset_value(row, col) # Reset the actual board's value
-            self.cells_dict[(row, col)].config(text="")  # Update the GUI
+            self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR)  # Update the GUI
 
 
     # Function to be used after the computer has solved the board so user cannot edit the board
     def disable_num_buttons(self):
-        for i in range(1, 10):
-            self.nums_dict[i]["state"] = DISABLED
+        for button in self.nums_dict:
+            self.nums_dict[button]["state"] = DISABLED
 
         self.selected_num = None
 

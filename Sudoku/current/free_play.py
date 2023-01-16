@@ -4,7 +4,6 @@ import time
 import game_template
 import windows
 
-
 # The Class for the "Free Play" mode which inherits from the GameTemplte class
 class FreePlayWindow(game_template.GameTemplate):
     def __init__(self):
@@ -94,7 +93,7 @@ class FreePlayWindow(game_template.GameTemplate):
 
         # Make every button have no text on it
         for cell in self.cells_dict:
-            self.cells_dict[cell].config(text="")
+            self.cells_dict[cell].config(text="", bg=self.BUTTON_BG_COLOUR)
 
         # Clears stack when the board is cleared
         self.numbers_stack.clear_stack()
