@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from copy import deepcopy
 import windows
 import game_template
@@ -44,9 +45,25 @@ class NewGame(game_template.GameTemplate):
     def __init__(self, difficulty):
         super().__init__() # Inherits from the GameTemplate class
 
+        self.lives = 5 # Number of lives the user has
+        self.INCORRECT_ICON = "❌"
+
         self.window.title(f"New Game - {difficulty.capitalize()} difficulty") # Sets the window title
         
         self.STARTING_BOARD = generate_board.GenerateBoard(difficulty).starting_board     # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
+        
+        # Testing starting board
+        # self.STARTING_BOARD = [
+        #     [1,2,3,4,5,6,0,0,0],
+        #     [7,8,9,1,2,3,4,5,6],
+        #     [4,5,6,7,8,9,1,2,3],
+        #     [3,4,5,6,7,8,9,1,2],
+        #     [9,1,2,3,4,5,6,7,8],
+        #     [6,7,8,9,1,2,3,4,5],
+        #     [5,6,7,8,9,1,2,3,4],
+        #     [2,3,4,5,6,7,8,9,1],
+        #     [8,9,1,2,3,4,5,6,7]
+        # ]
 
 
         self.board_class.game_board = deepcopy(self.STARTING_BOARD)       # Changes the game_board variable in the GameBoard class in the "board_class_file.py"
@@ -76,6 +93,13 @@ class NewGame(game_template.GameTemplate):
         self.return_but = Button(self.window, text="Return", font=self.FONT, padx=10, command=self.select_diffficulty)
         self.return_but.grid(row=4, column=12, columnspan=2)
         self.utilities_dict["return"] = self.return_but
+
+        # "Incorrect guesses" text
+        self.return_label = Label(self.window, text="Incorrect guesses", font=self.FONT)
+        self.return_label.grid(row=6, column=11, columnspan=3)
+
+        self.incorrect_guesses_label = Label(self.window, text=f"", fg="red", font=self.FONT)
+        self.incorrect_guesses_label.grid(row=7, column=11, columnspan=3)
 
 
     # Function to close the window and return to the select difficulty page
@@ -118,3 +142,41 @@ class NewGame(game_template.GameTemplate):
                     self.generated_buttons_dict[(row, col)] = self.cells_dict[(row, col)]
                     self.generated_buttons_dict[(row, col)].config(text=num) # Put the number on the board
                     self.generated_buttons_dict[(row, col)]["state"] = DISABLED # Disable the starting numbers buttons so the user cannot overwrite them
+
+
+    # A function that is called when the users trys to update a button on the board
+    def player_update_num(self, row, col):
+        # Checks if there is a selected number and throws an error if user has not selected a number
+        try:
+            num = self.selected_num
+        except:
+            messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
+        else:
+            self.board_class.update(num, row, col) # Update the backend board (not the GUI)
+
+            if num != 0: # If the button is not the "clear" button
+                if self.board_class.num_valid(num, row, col): # If the number is actually valid
+                    self.cells_dict[(row, col)].config(text=num, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT)
+
+                else: # If the user inputted number is incorrect according to the rules of Sudoku
+                    self.cells_dict[(row, col)].config(text=num, foreground="white", bg="red", font=self.FONT)
+                    
+                    new_text = self.incorrect_guesses_label.cget("text") + "❌"
+                    self.incorrect_guesses_label.config(text=new_text)
+
+                    self.lives -= 1 # Decrease the user's lives each time they place a wrong value
+
+                    if self.lives == 0:
+                        messagebox.showerror(title="You lose!", message="You have used all 5 of your lives, you lose!")
+                        self.close()
+                        SelectDifficuly()
+
+
+                self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
+
+                if self.board_class.is_board_full() and self.board_class.whole_board_valid(): # If the board is completed and fully valid
+                    messagebox.showinfo(title="Congratulations!", message="Congratulations, you have completed the puzzle!")
+
+
+            else: # If the button is the "clear" button, put empty text on the game grid
+                self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)

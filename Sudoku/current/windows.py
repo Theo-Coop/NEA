@@ -70,8 +70,16 @@ class Welcome(WindowTemplate):
 # Calls my API which holds the data for the rules page
 # This is outside the class because it only has to run once at the start of the program
 # Instead of running every time the "Rules" page is opened which takes time
-API_TEXT = requests.get(url="https://api.npoint.io/683413d787a24bac2915").json()
-TEXT = API_TEXT["Sudoku"]["Rules"]  # Stores the text in a constant
+
+try: # School WiFi doesn't allow API calls
+    API_TEXT = requests.get(url="https://api.npoint.io/683413d787a24bac2915").json()
+    TEXT = API_TEXT["Sudoku"]["Rules"]  # Stores the text in a constant
+except:
+    TEXT = ("Sudoku is played in a grid of 9x9, which is further spit into nine 3x3 squares. "
+            "Each square, row, and column, need to contain the numbers 1 through 9, without "
+            "repeating any numbers in the row, column, or square. The puzzles come with a minimum "
+            "of 17 pre-filled numbers for only one solution. To play this game, first press a "
+            "number below the board and press the cell on the board which you want to place the number in.")
 
 
 # Rules page class

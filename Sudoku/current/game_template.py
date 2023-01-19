@@ -69,34 +69,7 @@ class GameTemplate:
         self.selected_num = num
 
 
-    # A function that is called when the users trys to update a button on the board
-    def player_update_num(self, row, col):
-        # Checks if there is a selected number and throws an error if user has not selected a number
-        try:
-            num = self.selected_num
-        except:
-            messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
-        else:
-            self.board_class.update(num, row, col) # Update the actual board (not the GUI)
-
-            if num != 0: # If the button is not the "clear" button
-                if self.board_class.num_valid(num, row, col): # If the number is actually valid
-                    bg_colour = self.BUTTON_BG_COLOUR
-                    fg_colour = "blue"
-                else:
-                    bg_colour = "red"
-                    fg_colour = "white"
-
-                self.cells_dict[(row, col)].config(text=num, foreground=fg_colour, bg=bg_colour, disabledforeground="blue", font=self.FONT)
-
-                self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
-
-                if self.board_class.is_board_full() and self.board_class.whole_board_valid(): # If the board is completed and fully valid
-                    messagebox.showinfo(title="Congratulations!", message="Congratulations, you have completed the puzzle!")
-
-
-            else: # If the button is the "clear" button, put empty text on the game grid
-                self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)
+    
 
 
     # Quit the program

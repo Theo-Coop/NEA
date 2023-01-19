@@ -114,6 +114,32 @@ class FreePlayWindow(game_template.GameTemplate):
     def enable_slider(self):
         self.speed_slider["state"] = NORMAL
 
+    
+    # A function that is called when the users trys to update a button on the board
+    def player_update_num(self, row, col):
+        # Checks if there is a selected number and throws an error if user has not selected a number
+        try:
+            num = self.selected_num
+        except:
+            messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
+        else:
+            self.board_class.update(num, row, col) # Update the actual board (not the GUI)
+
+            if num != 0: # If the button is not the "clear" button
+                if self.board_class.num_valid(num, row, col): # If the number is actually valid
+                    bg_colour = self.BUTTON_BG_COLOUR
+                    fg_colour = "blue"
+                else:
+                    bg_colour = "red"
+                    fg_colour = "white"
+
+                self.cells_dict[(row, col)].config(text=num, foreground=fg_colour, bg=bg_colour, disabledforeground="blue", font=self.FONT)
+
+                self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
+
+            else: # If the button is the "clear" button, put empty text on the game grid
+                self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)
+
 
     # Instant solve function
     def instant_solve(self):
