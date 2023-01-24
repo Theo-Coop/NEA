@@ -5,6 +5,7 @@ import windows
 import game_template
 import generate_board
 
+generateBoardClass = generate_board.GenerateBoard() # Create an instance of the GeneratedBoard class
 
 # Select Difficulty window
 class SelectDifficuly:
@@ -50,8 +51,9 @@ class NewGame(game_template.GameTemplate):
 
         self.window.title(f"New Game - {difficulty.capitalize()} difficulty") # Sets the window title
         
-        self.STARTING_BOARD = generate_board.GenerateBoard(difficulty).starting_board     # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
-        
+        # self.STARTING_BOARD = generate_board.GenerateBoard(difficulty).starting_board     # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
+        self.STARTING_BOARD = generateBoardClass.create_board(difficulty)
+
         # Testing starting board
         # self.STARTING_BOARD = [
         #     [1,2,3,4,5,6,0,0,0],
