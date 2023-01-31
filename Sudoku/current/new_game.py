@@ -51,7 +51,7 @@ class NewGame(game_template.GameTemplate):
 
         self.window.title(f"New Game - {difficulty.capitalize()} difficulty") # Sets the window title
         
-        # self.STARTING_BOARD = generate_board.GenerateBoard(difficulty).starting_board     # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
+        # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
         self.STARTING_BOARD = generateBoardClass.create_board(difficulty)
 
         # Testing starting board
@@ -154,8 +154,7 @@ class NewGame(game_template.GameTemplate):
         except:
             messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
         else:
-            self.board_class.update(num, row, col) # Update the backend board (not the GUI)
-
+            # self.board_class.update(num, row, col) # Update the backend board (not the GUI)
             if num != 0: # If the button is not the "clear" button
                 if self.board_class.num_valid(num, row, col): # If the number is actually valid
                     self.cells_dict[(row, col)].config(text=num, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT)
@@ -173,12 +172,22 @@ class NewGame(game_template.GameTemplate):
                         self.close()
                         SelectDifficuly()
 
+                existing_num = self.board_class.return_num(row, col)
 
-                self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
+                if existing_num != 0: # There is already a number in that spot on the board
+                    if num != existing_num: # If the user has overwritten the already placed number with a new number
+                        self.board_class.update(num, row, col)
+                        self.numbers_stack.remove_element((row, col)) # Remove the old number from the stack
+                        self.numbers_stack.push([(row,col), num])
+                else:
+                    self.board_class.update(num, row, col)
+                    self.numbers_stack.push([(row,col), num])
 
+                
                 if self.board_class.is_board_full() and self.board_class.whole_board_valid(): # If the board is completed and fully valid
                     messagebox.showinfo(title="Congratulations!", message="Congratulations, you have completed the puzzle!")
 
 
             else: # If the button is the "clear" button, put empty text on the game grid
                 self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)
+                self.numbers_stack.remove_element((row, col))

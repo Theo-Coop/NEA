@@ -18,7 +18,7 @@ class GameTemplate:
         self.utilities_dict = {}
 
         # creates an instance of the "GameBoard" class to use its methods to modify the board
-        self.board_class = board_class_file.GameBoard()
+        self.board_class = board_class_file.GameBoard() # This is composition (creating an instance of GameBoard which only exists inside this object)
 
         # Create a stack using my "Stack" class
         self.numbers_stack = stack.Stack()

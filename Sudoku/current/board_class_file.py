@@ -12,6 +12,10 @@ class GameBoard:
         self.game_board[r][c] = num
 
     
+    def return_num(self, r, c): # Returns the number at the co-ords on the board
+        return self.game_board[r][c]
+
+    
     def reset_value(self, r, c): # Reset the number at the co-ordinates supplied
         self.game_board[r][c] = 0 
 

@@ -40,3 +40,25 @@ class Stack:
     def clear_stack(self):
         while not self.is_empty():
             self.pop()
+
+    
+    # Removes the element in the stack with the given co-ords by removing everything from the stack, 
+    # holding it in a temporary stack and putting it back in the original one
+    def remove_element(self, co_ords):
+        temp = Stack()
+
+        while self.head and self.head.data[0] != co_ords:
+            temp.push(self.pop())
+
+        if self.head:
+            self.pop()
+
+        while temp.is_empty() == False:
+            self.push(temp.pop())
+           
+
+    # def print_stack(self):
+    #     current = self.head
+    #     while current:
+    #         print(current.data)
+    #         current = current.next

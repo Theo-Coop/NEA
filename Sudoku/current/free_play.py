@@ -123,22 +123,27 @@ class FreePlayWindow(game_template.GameTemplate):
         except:
             messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
         else:
-            self.board_class.update(num, row, col) # Update the actual board (not the GUI)
-
             if num != 0: # If the button is not the "clear" button
                 if self.board_class.num_valid(num, row, col): # If the number is actually valid
-                    bg_colour = self.BUTTON_BG_COLOUR
-                    fg_colour = "blue"
+                    self.cells_dict[(row, col)].config(text=num, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT)
                 else:
-                    bg_colour = "red"
-                    fg_colour = "white"
+                    self.cells_dict[(row, col)].config(text=num, foreground="white", bg="red", font=self.FONT)
 
-                self.cells_dict[(row, col)].config(text=num, foreground=fg_colour, bg=bg_colour, disabledforeground="blue", font=self.FONT)
 
-                self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
+                existing_num = self.board_class.return_num(row, col)
+        
+                if existing_num != 0: # There is already a number in that spot on the board
+                    if num != existing_num: # If the user has overwritten the already placed number with a new number
+                        self.board_class.update(num, row, col)
+                        self.numbers_stack.remove_element((row, col)) # Remove the old number from the stack
+                        self.numbers_stack.push([(row,col), num])
+                else:
+                    self.board_class.update(num, row, col)
+                    self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
 
             else: # If the button is the "clear" button, put empty text on the game grid
                 self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)
+                self.numbers_stack.remove_element((row, col))
 
 
     # Instant solve function
@@ -150,7 +155,7 @@ class FreePlayWindow(game_template.GameTemplate):
             for row in range(9): # Updates every number with the solved numbers
                 for col in range(9):
                     if self.cells_dict[(row, col)]["text"] == "":
-                        num = self.board_class.game_board[row][col]
+                        num = self.board_class.return_num(row, col)
                         self.solver_update_num(num, row, col, "green")
 
         else:
@@ -178,7 +183,7 @@ class FreePlayWindow(game_template.GameTemplate):
 
             for i in range(1, 10):
                 if self.board_class.num_valid(i, row, col): # Checks if the number is valid in that spot
-                    self.board_class.game_board[row][col] = i
+                    self.board_class.update(i, row, col)
 
                     self.window.update() # Have to do this with Tkinter when using the "time" module
                     if self.solving_speed != 0:
@@ -189,7 +194,8 @@ class FreePlayWindow(game_template.GameTemplate):
                     if self.solve(): # Recursive call of this function
                         return True
                     else:
-                        self.board_class.game_board[row][col] = 0 # Otherwise, "backtrack" by placing a 0
+                        # Otherwise, "backtrack" by placing a 0
+                        self.board_class.update(0, row, col)
 
                         self.solver_update_num("-", row, col, "red") # Update the button with red to show backtracking
         else:
