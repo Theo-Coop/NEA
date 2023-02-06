@@ -3,7 +3,7 @@ import requests
 import free_play
 import new_game
 
-
+ 
 # A template that the windows can inheret from that include close and quit functions, and the default font
 class WindowTemplate:
     def __init__(self):
@@ -55,6 +55,7 @@ class Welcome(WindowTemplate):
     def open_rules(self):
         self.close()
         Rules()
+
 
     # Function to close the current window and open the FreePlayWindow class in the "free_play.py" file
     def open_freeplay(self):

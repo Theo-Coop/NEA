@@ -4,6 +4,8 @@ from copy import deepcopy
 import windows
 import game_template
 import generate_board
+import accounts
+
 
 generateBoardClass = generate_board.GenerateBoard() # Create an instance of the GeneratedBoard class
 
@@ -72,36 +74,51 @@ class NewGame(game_template.GameTemplate):
 
         self.populate_board() # Populate the board with numbers
 
+
         # Buttons
+        self.sign_in_button = Button(self.window, text="Sign in", font=self.FONT, command=self.sign_in)
+        self.sign_in_button.grid(row=0, column=11)
+        
+        self.create_account_button = Button(self.window, text="Create account", font=self.FONT, command=self.create_account)
+        self.create_account_button.grid(row=0, column=12, columnspan=2, padx=10)
+
+        
         self.game_options_label = Label(self.window, text="Game options", font=self.FONT)
-        self.game_options_label.grid(row=0, column=11, columnspan=3)
+        self.game_options_label.grid(row=1, column=11, columnspan=3)
 
         self.clear_but = Button(self.window, text="Clear", font=self.FONT, padx=10, command=self.clear)
-        self.clear_but.grid(row=1, column=11)
-        self.utilities_dict["clear"] = self.clear_but
+        self.clear_but.grid(row=2, column=11)
 
         self.undo_but = Button(self.window, text="Undo", font=self.FONT, padx=10, command=self.undo)
-        self.undo_but.grid(row=1, column=12, columnspan=2, padx=10)
-        self.utilities_dict["undo"] = self.undo_but
+        self.undo_but.grid(row=2, column=12, columnspan=2, padx=10)
 
 
         self.return_label = Label(self.window, text="Return options", font=self.FONT)
-        self.return_label.grid(row=3, column=11, columnspan=3)
+        self.return_label.grid(row=4, column=11, columnspan=3)
 
         self.quit_but = Button(self.window, text="Quit", font=self.FONT, padx=10, command=self.quit)
-        self.quit_but.grid(row=4, column=11, padx=10)
-        self.utilities_dict["quit"] = self.quit_but
+        self.quit_but.grid(row=5, column=11, padx=10)
+
 
         self.return_but = Button(self.window, text="Return", font=self.FONT, padx=10, command=self.select_diffficulty)
-        self.return_but.grid(row=4, column=12, columnspan=2)
-        self.utilities_dict["return"] = self.return_but
+        self.return_but.grid(row=5, column=12, columnspan=2)
 
         # "Incorrect guesses" text
         self.return_label = Label(self.window, text="Incorrect guesses", font=self.FONT)
-        self.return_label.grid(row=6, column=11, columnspan=3)
+        self.return_label.grid(row=7, column=11, columnspan=3)
 
         self.incorrect_guesses_label = Label(self.window, text=f"", fg="red", font=self.FONT)
-        self.incorrect_guesses_label.grid(row=7, column=11, columnspan=3)
+        self.incorrect_guesses_label.grid(row=8, column=11, columnspan=3)
+
+
+    def sign_in(self):
+        self.window.withdraw()
+        accounts.SignIn(self.window) # Passing in the actual window into the sign in class so I can show the window again
+
+    
+    def create_account(self):
+        self.window.withdraw()
+        accounts.CreateAccount(self.window)
 
 
     # Function to close the window and return to the select difficulty page
