@@ -32,6 +32,7 @@ class hidden:
         self.window.mainloop()
 
 
+
 class Welcome(WindowTemplate):
     def __init__(self):
         super().__init__()

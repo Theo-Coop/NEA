@@ -38,7 +38,7 @@ class SignIn(UserWindowsTemplate):
         self.password_entry.grid(row=1, column=1, columnspan=2)
 
         
-        self.sign_in_but = Button(self.window, text="Sign in", font=self.FONT, command=self.sign_in)
+        self.sign_in_but = Button(self.window, text="Sign in", font=self.FONT, command=self.check_inputs)
         self.sign_in_but.grid(row=2, column=0)
 
         self.create_account_but = Button(self.window, text="Create account", font=self.FONT, command=self.create_account)
@@ -50,6 +50,14 @@ class SignIn(UserWindowsTemplate):
 
         self.forgor_pw = Button(self.window, text="Forgot Password", font=("Arial", 10))
         self.forgor_pw.grid(row=3, column=1)
+
+
+
+    def check_inputs(self):
+        if self.username_input.get() and self.password_entry.get():
+            self.sign_in()
+        else:
+            messagebox.showerror(title="Error", message="Please enter text in all fields before continuing") 
 
 
     def go_back(self):
@@ -105,10 +113,18 @@ class CreateAccount(UserWindowsTemplate):
         self.password_reentry.grid(row=3, column=1, columnspan=2)
 
 
-        self.create_password_button = Button(self.window, text="Create!", font=("Arial", 13, "bold"), command=self.create_account)
+        self.create_password_button = Button(self.window, text="Create!", font=("Arial", 13, "bold"), command=self.check_inputs)
         self.create_password_button.grid(row=4, column=1, pady=10)
 
+
     
+    def check_inputs(self):
+        if self.email_input.get() and self.username_input.get() and self.password_entry.get() and self.password_reentry.get():
+            self.create_account()
+        else:
+            messagebox.showerror(title="Error", message="Please enter text in all fields before continuing")
+
+
     def create_account(self):
         # Create account
         SignIn(self.game_window)
