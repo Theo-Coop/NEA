@@ -83,21 +83,6 @@ class FreePlayWindow(game_template.GameTemplate):
         self.solving_speed = self.slider_val.get() / 1000
          # Scale goes from 0-100 so divide by 1000 to get the accurate time.sleep sleep time
 
-
-    # Wipe the entire board
-    def wipe(self):
-        self.board_class.new_board() # Creaate a new board from the "board_class_file.py"
-        
-        self.enable_num_buttons()  # Make the number buttons enabled
-        self.enable_game_cells()   # Make the game cells enabled
-
-        # Make every button have no text on it
-        for cell in self.cells_dict:
-            self.cells_dict[cell].config(text="", bg=self.BUTTON_BG_COLOUR)
-
-        # Clears stack when the board is cleared
-        self.numbers_stack.clear_stack()
-
     
     # Updates the board cell buttons with the solver numbers
     def solver_update_num(self, num, row, col, colour):

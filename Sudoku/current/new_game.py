@@ -141,6 +141,7 @@ class NewGame(game_template.GameTemplate):
 
     
     # Wipes entire board
+    # Polymorphism because overwriting the wipe() method in the game_template file
     def wipe(self):
         self.generated_buttons_dict = {} # Reset the buttons dictionary
 

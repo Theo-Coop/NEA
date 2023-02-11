@@ -135,6 +135,21 @@ class GameTemplate:
         for cell in self.cells_dict:
             self.cells_dict[cell]["state"] = NORMAL
 
+    
+    # Wipe the entire board
+    def wipe(self):
+        self.board_class.new_board() # Creaate a new board from the "board_class_file.py"
+        
+        self.enable_num_buttons()  # Make the number buttons enabled
+        self.enable_game_cells()   # Make the game cells enabled
+
+        # Make every button have no text on it
+        for cell in self.cells_dict:
+            self.cells_dict[cell].config(text="", bg=self.BUTTON_BG_COLOUR)
+
+        # Clears stack when the board is cleared
+        self.numbers_stack.clear_stack()
+
 
 if __name__ == "__main__": # Just running on its own
     GameTemplate()

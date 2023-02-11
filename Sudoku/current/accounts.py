@@ -1,3 +1,4 @@
+import re
 from tkinter import *
 from tkinter import messagebox
 
@@ -120,9 +121,18 @@ class CreateAccount(UserWindowsTemplate):
     
     def check_inputs(self):
         if self.email_input.get() and self.username_input.get() and self.password_entry.get() and self.password_reentry.get():
-            self.create_account()
+            self.validate_email()
         else:
             messagebox.showerror(title="Error", message="Please enter text in all fields before continuing")
+
+
+    def validate_email(self):
+        regex = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
+        user_email = self.email_input.get()
+        if regex.fullmatch(user_email):
+            self.create_account()
+        else:
+            messagebox.showerror(title="Error", message="Please enter a valid email address")
 
 
     def create_account(self):
