@@ -110,7 +110,7 @@ class FreePlayWindow(game_template.GameTemplate):
         else:
             if num != 0: # If the button is not the "clear" button
                 if self.board_class.num_valid(num, row, col): # If the number is actually valid
-                    self.cells_dict[(row, col)].config(text=num, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT)
+                    self.cells_dict[(row, col)].config(text=num, foreground="blue", disabledforeground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT)
                 else:
                     self.cells_dict[(row, col)].config(text=num, foreground="white", bg="red", font=self.FONT)
 
@@ -127,7 +127,7 @@ class FreePlayWindow(game_template.GameTemplate):
                     self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
 
             else: # If the button is the "clear" button, put empty text on the game grid
-                self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)
+                self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR)
                 self.numbers_stack.remove_element((row, col))
 
 

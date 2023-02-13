@@ -69,9 +69,6 @@ class GameTemplate:
         self.selected_num = num
 
 
-    
-
-
     # Quit the program
     def quit(self):
         exit()
@@ -138,7 +135,7 @@ class GameTemplate:
     
     # Wipe the entire board
     def wipe(self):
-        self.board_class.new_board() # Creaate a new board from the "board_class_file.py"
+        self.board_class.new_board() # Create a new board from the "board_class_file.py"
         
         self.enable_num_buttons()  # Make the number buttons enabled
         self.enable_game_cells()   # Make the game cells enabled
