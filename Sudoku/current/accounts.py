@@ -55,7 +55,7 @@ class SignIn(UserWindowsTemplate):
 
 
     def check_inputs(self):
-        if self.username_input.get() and self.password_entry.get():
+        if self.username_input.get() and self.password_entry.get(): # If the user actually inputted text
             self.sign_in()
         else:
             messagebox.showerror(title="Error", message="Please enter text in all fields before continuing") 
@@ -114,28 +114,60 @@ class CreateAccount(UserWindowsTemplate):
         self.password_reentry.grid(row=3, column=1, columnspan=2)
 
 
-        self.create_password_button = Button(self.window, text="Create!", font=("Arial", 13, "bold"), command=self.check_inputs)
+        self.password_info_button = Button(self.window, text="Password requirements", font=("Arial", 10), command=self.password_requirements_popup)
+        self.password_info_button.grid(row=4, column=0)
+
+
+        self.create_password_button = Button(self.window, text="Create!", font=("Arial", 13, "bold"), command=self.check_inputs, padx=20)
         self.create_password_button.grid(row=4, column=1, pady=10)
 
 
-    
-    def check_inputs(self):
-        if self.email_input.get() and self.username_input.get() and self.password_entry.get() and self.password_reentry.get():
-            self.validate_email()
-        else:
-            messagebox.showerror(title="Error", message="Please enter text in all fields before continuing")
+
+    def password_requirements_popup(self):
+        messagebox.showinfo(title="Password requirements", message=("Please create a strong password, which is at least "
+                                                                    "8 characters long, using a combination of capital "
+                                                                    "and lowercase letters, numbers, and symbols.\n"
+                                                                    "Symbols accepted: #?!@$%^&*-\n"
+                                                                    "You must use at least one of everything mentioned."))
+
+
+    def all_inputs_filled(self):
+        return self.email_input.get() and self.username_input.get() and self.password_entry.get() and self.password_reentry.get()
 
 
     def validate_email(self):
         regex = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
         user_email = self.email_input.get()
         if regex.fullmatch(user_email):
-            self.create_account()
+            return True
         else:
             messagebox.showerror(title="Error", message="Please enter a valid email address")
+    
+
+    def validate_password(self):
+        user_password = self.password_entry.get()
+        user_password_reentry = self.password_reentry.get()
+
+        regex = re.compile(r'^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')
+        if regex.fullmatch(user_password):
+            if user_password == user_password_reentry:
+                return True
+            else:
+                messagebox.showerror(title="Error", message="Passwords do not match.")
+        else:
+            messagebox.showerror(title="Error", message="Please enter a valid password at least 8 characters long")
+
+
+    def check_inputs(self):
+        if self.all_inputs_filled():
+            if self.validate_email() and self.validate_password():
+                self.create_account()
+        else:
+            messagebox.showerror(title="Error", message="Please enter text in all fields before continuing")
 
 
     def create_account(self):
+        messagebox.showinfo(title="Congratulations!", message="You have successfully created an account!")    
         # Create account
         SignIn(self.game_window)
         self.close()

@@ -29,7 +29,7 @@ class GameBoard:
         return True   # The board is full
 
 
-    def clear_user_inputs(self, start_board): # Used inn the New Game mode, where the numbers the user inputted
+    def clear_user_inputs(self, start_board): # Used in the New Game mode, where the numbers the user inputted
         # should be cleared, but the starting board numbers should remain
         for r in range(9):
             for c in range(9):
@@ -48,15 +48,15 @@ class GameBoard:
 
     
     # Check if a given number is valid in the given cell
-    def num_valid(self, number, r, c):
+    def num_valid(self, num, r, c):
         # Check row
         for i in range(len(self.game_board[0])):
-            if self.game_board[r][i] == number and (r,i) != (r,c): # check if there are duplicate nums in the row and "i" is not the same as the column
+            if self.game_board[r][i] == num and (r,i) != (r,c): # check if there are duplicate nums in the row and "i" is not the same as the column
                 return False
 
         # Check column
         for i in range(len(self.game_board)):
-            if self.game_board[i][c] == number and (i,c) != (r,c): # check if there are duplicate nums in the column and "i" is not the same as the row
+            if self.game_board[i][c] == num and (i,c) != (r,c): # check if there are duplicate nums in the column and "i" is not the same as the row
                 return False
 
         # Check 3x3 cube for duplicate number
@@ -65,7 +65,7 @@ class GameBoard:
 
         for i in range(box_y * 3, box_y*3 + 3):
             for j in range(box_x * 3, box_x*3 + 3):
-                if self.game_board[i][j] == number and (i,j) != (r,c):
+                if self.game_board[i][j] == num and (i,j) != (r,c):
                     return False
 
         return True
