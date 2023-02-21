@@ -1,7 +1,9 @@
 import re
+import bcrypt
 from tkinter import *
 from tkinter import messagebox
 
+users = {}
 
 class UserWindowsTemplate:
     def __init__(self):
@@ -68,8 +70,19 @@ class SignIn(UserWindowsTemplate):
 
     def sign_in(self):
         # Sign in logic
-        self.game_window.deiconify() # Shows the hidden window
-        self.close()
+        self.inputted_username = self.username_input.get()
+        self.inputted_password = self.password_entry.get().encode()
+
+        try: # Check if these fields exist
+            pre_existing_hash = users[self.inputted_username]
+        except:
+            messagebox.showerror(title="Error", message="Username or Password is not valid.")
+        else:
+            if bcrypt.checkpw(self.inputted_password, pre_existing_hash):
+                self.game_window.deiconify() # Shows the hidden window
+                self.close()
+            else:
+                messagebox.showerror(title="Error", message="Username or Password is not valid.")
     
 
     def create_account(self):
@@ -148,7 +161,7 @@ class CreateAccount(UserWindowsTemplate):
         user_password = self.password_entry.get()
         user_password_reentry = self.password_reentry.get()
 
-        regex = re.compile(r'^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')
+        regex = re.compile(r'^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$')
         if regex.fullmatch(user_password):
             if user_password == user_password_reentry:
                 return True
@@ -168,6 +181,16 @@ class CreateAccount(UserWindowsTemplate):
 
     def create_account(self):
         messagebox.showinfo(title="Congratulations!", message="You have successfully created an account!")    
+       
         # Create account
+        self.email = self.email_input.get()
+        self.username = self.username_input.get()
+        self.password = self.password_entry.get().encode() # make it "bytes" format
+
+        salt = bcrypt.gensalt() # Create the salt
+
+        users[self.username] = bcrypt.hashpw(self.password, salt)
+
+
         SignIn(self.game_window)
         self.close()
