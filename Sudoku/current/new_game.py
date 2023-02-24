@@ -48,6 +48,7 @@ class NewGame(game_template.GameTemplate):
     def __init__(self, difficulty):
         super().__init__() # Inherits from the GameTemplate class
 
+        self.is_signed_in = False # Variable to store whether the user is signed in or not
         self.lives = 5 # Number of lives the user has
         self.INCORRECT_ICON = "❌"
 
@@ -111,14 +112,28 @@ class NewGame(game_template.GameTemplate):
         self.incorrect_guesses_label.grid(row=8, column=11, columnspan=3)
 
 
+    def show_window(self):
+        self.window.deiconify()
+
+
+    def signed_in(self, username): # The user is now signed in
+        self.is_signed_in = True
+        self.create_account_button.destroy()
+
+        self.account_label = Label(self.window, text=f"Signed in as: {username}", font=("Arial", 10))
+        self.account_label.grid(row=0, column=12)
+
+
     def sign_in(self):
         self.window.withdraw()
-        accounts.SignIn(self.window) # Passing in the actual window into the sign in class so I can show the window again
+
+        accounts.SignIn(self)# Passing in this instance into the sign in class so I can call functions from that class
 
     
     def create_account(self):
         self.window.withdraw()
-        accounts.CreateAccount(self.window)
+        # accounts.CreateAccount(self.window)
+        accounts.CreateAccount(self)
 
 
     # Function to close the window and return to the select difficulty page

@@ -18,6 +18,12 @@ class UserWindowsTemplate:
     def close(self):
         self.window.destroy()
 
+    # This function is used in both classes and they both have a "game_window" variable. 
+    # This is used to return to the game without signing in / creating an account
+    def go_back(self):
+        self.game_window.show_window()
+        self.close()
+
 
 
 class SignIn(UserWindowsTemplate):
@@ -63,10 +69,6 @@ class SignIn(UserWindowsTemplate):
             messagebox.showerror(title="Error", message="Please enter text in all fields before continuing") 
 
 
-    def go_back(self):
-        self.game_window.deiconify()
-        self.close()
-
 
     def sign_in(self):
         # Sign in logic
@@ -78,8 +80,9 @@ class SignIn(UserWindowsTemplate):
         except:
             messagebox.showerror(title="Error", message="Username or Password is not valid.")
         else:
-            if bcrypt.checkpw(self.inputted_password, pre_existing_hash):
-                self.game_window.deiconify() # Shows the hidden window
+            if bcrypt.checkpw(self.inputted_password, pre_existing_hash): # If the password's match
+                self.game_window.show_window() # Shows the hidden window
+                self.game_window.signed_in(self.inputted_username)
                 self.close()
             else:
                 messagebox.showerror(title="Error", message="Username or Password is not valid.")
@@ -134,6 +137,9 @@ class CreateAccount(UserWindowsTemplate):
         self.create_password_button = Button(self.window, text="Create!", font=("Arial", 13, "bold"), command=self.check_inputs, padx=20)
         self.create_password_button.grid(row=4, column=1, pady=10)
 
+        self.return_but = Button(self.window, text="Return", font=("Arial", 10), command=self.go_back)
+        self.return_but.grid(row=4, column=2, pady=10)
+
 
 
     def password_requirements_popup(self):
@@ -149,12 +155,24 @@ class CreateAccount(UserWindowsTemplate):
 
 
     def validate_email(self):
-        regex = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
         user_email = self.email_input.get()
+
+        regex = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
         if regex.fullmatch(user_email):
             return True
         else:
             messagebox.showerror(title="Error", message="Please enter a valid email address")
+
+    
+    def validate_username(self):
+        user_username = self.username_input.get()
+        
+        regex = re.compile(r'^[a-zA-Z0-9_.-]+$')
+        if regex.fullmatch(user_username):
+            return True
+        else:
+            messagebox.showerror(title="Error", message=("Please enter a username only containing upper and "
+                                                         "lowercase letters, numbers, and the characters: _.-"))
     
 
     def validate_password(self):
@@ -173,7 +191,7 @@ class CreateAccount(UserWindowsTemplate):
 
     def check_inputs(self):
         if self.all_inputs_filled():
-            if self.validate_email() and self.validate_password():
+            if self.validate_email() and self.validate_username() and self.validate_password():
                 self.create_account()
         else:
             messagebox.showerror(title="Error", message="Please enter text in all fields before continuing")
