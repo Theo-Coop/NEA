@@ -77,11 +77,10 @@ class NewGame(game_template.GameTemplate):
 
 
         # Buttons
-        self.sign_in_button = Button(self.window, text="Sign in", font=self.FONT, command=self.sign_in)
-        self.sign_in_button.grid(row=0, column=11)
+        self.account_label = Label(self.window, text="", font=("Arial", 10)) # Account label for when user is signed in
+        self.account_label.grid(row=0, column=12)
         
-        self.create_account_button = Button(self.window, text="Create account", font=self.FONT, command=self.create_account)
-        self.create_account_button.grid(row=0, column=12, columnspan=2, padx=10)
+        self.create_sign_in_buttons() # This function creates the sign in and create accout buttons so I put them into a function to avoid rewriting it twice
 
         
         self.game_options_label = Label(self.window, text="Game options", font=self.FONT)
@@ -115,13 +114,33 @@ class NewGame(game_template.GameTemplate):
     def show_window(self):
         self.window.deiconify()
 
+    
+    def create_sign_in_buttons(self):
+        self.sign_in_button = Button(self.window, text="Sign in", font=self.FONT, command=self.sign_in)
+        self.sign_in_button.grid(row=0, column=11)
+
+        self.create_account_button = Button(self.window, text="Create account", font=self.FONT, command=self.create_account)
+        self.create_account_button.grid(row=0, column=12, columnspan=2, padx=10)
+
 
     def signed_in(self, username): # The user is now signed in
         self.is_signed_in = True
         self.create_account_button.destroy()
+        self.sign_in_button.destroy()
 
-        self.account_label = Label(self.window, text=f"Signed in as: {username}", font=("Arial", 10))
-        self.account_label.grid(row=0, column=12)
+        self.sign_out_button = Button(self.window, text="Sign out", font=self.FONT, command=self.sign_out)
+        self.sign_out_button.grid(row=0, column=11)
+
+
+        self.account_label.config(text=f"Signed in as: {username}")
+
+
+    def sign_out(self):
+        self.sign_out_button.destroy()
+
+        self.create_sign_in_buttons()
+
+        self.account_label.config(text="")
 
 
     def sign_in(self):
