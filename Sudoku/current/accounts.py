@@ -157,7 +157,7 @@ class CreateAccount(UserWindowsTemplate):
     def validate_email(self):
         user_email = self.email_input.get()
 
-        regex = re.compile(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
+        regex = re.compile(r'^[a-zA-Z0-9_.+-]+[@][a-zA-Z0-9-]+[.][a-zA-Z0-9-.]+$')
         if regex.fullmatch(user_email):
             return True
         else:
