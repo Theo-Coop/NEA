@@ -2,8 +2,11 @@ import re
 import bcrypt
 from tkinter import *
 from tkinter import messagebox
+import sql_commands
 
-users = {}
+
+db = sql_commands.Sql()
+
 
 class UserWindowsTemplate:
     def __init__(self):
@@ -76,7 +79,7 @@ class SignIn(UserWindowsTemplate):
         self.inputted_password = self.password_entry.get().encode()
 
         try: # Check if these fields exist
-            pre_existing_hash = users[self.inputted_username]
+            pre_existing_hash = db.return_password(self.inputted_username)
         except:
             messagebox.showerror(title="Error", message="Username or Password is not valid.")
         else:
@@ -207,7 +210,10 @@ class CreateAccount(UserWindowsTemplate):
 
         salt = bcrypt.gensalt() # Create the salt
 
-        users[self.username] = bcrypt.hashpw(self.password, salt)
+        hashed_pw = bcrypt.hashpw(self.password, salt)
+        hashed_pw = hashed_pw.decode() # Turn it back into a string
+
+        db.add_user(self.username, self.email, hashed_pw)
 
 
         SignIn(self.game_window)

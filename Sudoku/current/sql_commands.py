@@ -8,8 +8,11 @@ class Sql:
         self.cur = self.con.cursor()
 
 
-    def commit_close(self):
+    def commit(self):
         self.con.commit()
+
+
+    def close(self):
         self.con.close()
 
 
@@ -24,20 +27,46 @@ class Sql:
 
 
     def insert_values(self):
-        command2 = ("INSERT INTO user VALUES (2, 'Nathan', 'nathan@gmail.com', 'Nathan123!')")
-
+        # hashed = b'$2b$12$dgwplqLS1QUYgGKL7Csdd.kJFV8vQhcBQR/uVlc7MCybSEPrpjkve'
+        command2 = (f"INSERT INTO user VALUES (1, 'Theo', 'theo@gmail.com', 'Password1!')")
+    
         self.cur.execute(command2)
         
-        self.commit_close()
+        self.commit()
 
+
+    def add_user(self, username, email, password):
+        command = ("SELECT * FROM user ORDER BY UserID DESC LIMIT 1") # Fetch the latest item to see the newest user ID
+        
+        self.cur.execute(command)
+        results = self.cur.fetchall()
+        latest_user_id = results[0][0]
+
+
+        command2 = (f"INSERT INTO user VALUES ({latest_user_id+1}, '{username}', '{email}', '{password}')")
+        self.cur.execute(command2)
+
+        self.commit()
+
+    
+    def return_password(self, username):
+        command = (f"SELECT password FROM user WHERE username='{username}'")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+        print(result)
 
 
     def delete_values(self):
-        command = ("DELETE FROM user WHERE UserID = 2")
+        command = ("DELETE FROM user WHERE UserID = 4")
 
         self.cur.execute(command)
 
-        self.commit_close()
+        self.commit()
 
-db = Sql()
-db.insert_values()
+
+
+
+if __name__ == "__main__":
+    db = Sql()
+    db.insert_values()
