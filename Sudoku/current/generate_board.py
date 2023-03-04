@@ -19,7 +19,7 @@ class GenerateBoard:
         # create an empty starting board
         self.starting_board = [[0 for _ in range(9)] for _ in range(9)]
 
-        # Fill in 15 random squares with a random number according to the rules of Sudoku
+        # Fill in 13 random squares with a random number according to the rules of Sudoku
         for num in range(13):
             num = random.randint(1,9)
             r = random.randint(0,8)
