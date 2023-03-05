@@ -79,9 +79,9 @@ class SignIn(UserWindowsTemplate):
         self.inputted_password = self.password_entry.get().encode()
 
         try: # Check if these fields exist
-            pre_existing_hash = db.return_password(self.inputted_username)
+            pre_existing_hash = (db.return_password(self.inputted_username)).encode()
         except:
-            messagebox.showerror(title="Error", message="Username or Password is not valid.")
+            messagebox.showerror(title="Error", message="There is no user with that Username.")
         else:
             if bcrypt.checkpw(self.inputted_password, pre_existing_hash): # If the password's match
                 self.game_window.show_window() # Shows the hidden window

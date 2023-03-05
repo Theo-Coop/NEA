@@ -54,7 +54,8 @@ class Sql:
         self.cur.execute(command)
 
         result = self.cur.fetchall()
-        print(result)
+        # print(result[0][0])
+        return result[0][0]
 
 
     def delete_values(self):
@@ -69,4 +70,4 @@ class Sql:
 
 if __name__ == "__main__":
     db = Sql()
-    db.insert_values()
+    db.return_password("GUIuser1")
