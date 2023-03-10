@@ -3,6 +3,7 @@ import bcrypt
 from tkinter import *
 from tkinter import messagebox
 import sql_commands
+import forgotton_password
 
 
 db = sql_commands.Sql()
@@ -12,10 +13,6 @@ class UserWindowsTemplate:
     def __init__(self):
         self.window = Toplevel()
         self.FONT = ("Arial", 12, "bold")
-
-
-    def quit(self):
-        exit()
 
 
     def close(self):
@@ -60,8 +57,8 @@ class SignIn(UserWindowsTemplate):
         self.return_but = Button(self.window, text="Return", font=("Arial", 10), command=self.go_back)
         self.return_but.grid(row=3, column=0, pady=10)
 
-        self.forgor_pw = Button(self.window, text="Forgot Password", font=("Arial", 10))
-        self.forgor_pw.grid(row=3, column=1)
+        self.forgot_pw = Button(self.window, text="Forgot Password", font=("Arial", 10))
+        self.forgot_pw.grid(row=3, column=1)
 
 
 
@@ -90,6 +87,10 @@ class SignIn(UserWindowsTemplate):
             else:
                 messagebox.showerror(title="Error", message="Username or Password is not valid.")
     
+
+    def forgotton_pw(self):
+        forgotton_password.ForgottonPassword()
+
 
     def create_account(self):
         CreateAccount(self.game_window)
@@ -169,7 +170,12 @@ class CreateAccount(UserWindowsTemplate):
     
     def validate_username(self):
         user_username = self.username_input.get()
+
         
+        if db.check_username(user_username) != []: # If the username already exists
+            messagebox.showerror(title="Error", message="Username already takens")
+            return False
+
         regex = re.compile(r'^[a-zA-Z0-9_.-]+$')
         if regex.fullmatch(user_username):
             return True

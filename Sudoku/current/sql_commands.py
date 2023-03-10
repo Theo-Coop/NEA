@@ -49,6 +49,14 @@ class Sql:
         self.commit()
 
     
+    def check_username(self, username): # Check if the inputted username is already taken
+        command = (f"SELECT password FROM user WHERE username='{username}'")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+        return result[0][0]
+
+    
     def return_password(self, username):
         command = (f"SELECT password FROM user WHERE username='{username}'")
         self.cur.execute(command)
@@ -59,7 +67,7 @@ class Sql:
 
 
     def delete_values(self):
-        command = ("DELETE FROM user WHERE UserID = 4")
+        command = ("DELETE FROM user WHERE UserID = 0")
 
         self.cur.execute(command)
 
@@ -70,4 +78,4 @@ class Sql:
 
 if __name__ == "__main__":
     db = Sql()
-    db.return_password("GUIuser1")
+    db.delete_values()
