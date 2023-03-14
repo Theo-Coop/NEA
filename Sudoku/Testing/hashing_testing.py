@@ -37,10 +37,10 @@
 
 import bcrypt
 
+
 start_text = b"abcde123"
 
 salt = bcrypt.gensalt()
-print(salt)
 
 hash = bcrypt.hashpw(start_text, salt)
 
