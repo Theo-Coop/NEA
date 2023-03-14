@@ -57,7 +57,7 @@ class SignIn(UserWindowsTemplate):
         self.return_but = Button(self.window, text="Return", font=("Arial", 10), command=self.go_back)
         self.return_but.grid(row=3, column=0, pady=10)
 
-        self.forgot_pw = Button(self.window, text="Forgot Password", font=("Arial", 10))
+        self.forgot_pw = Button(self.window, text="Forgot Password", font=("Arial", 10), command=self.forgotton_pw)
         self.forgot_pw.grid(row=3, column=1)
 
 
@@ -172,7 +172,7 @@ class CreateAccount(UserWindowsTemplate):
         user_username = self.username_input.get()
 
         
-        if db.check_username(user_username) != []: # If the username already exists
+        if db.check_username(user_username) == 1: # If the username already exists
             messagebox.showerror(title="Error", message="Username already takens")
             return False
 
@@ -188,7 +188,7 @@ class CreateAccount(UserWindowsTemplate):
         user_password = self.password_entry.get()
         user_password_reentry = self.password_reentry.get()
 
-        regex = re.compile(r'^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$')
+        regex = re.compile(r'^(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[#?!@$%^&*_-]).{8,}$')
         if regex.fullmatch(user_password):
             if user_password == user_password_reentry:
                 return True
