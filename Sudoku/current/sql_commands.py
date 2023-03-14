@@ -28,7 +28,7 @@ class Sql:
 
     def insert_values(self):
         # hashed = b'$2b$12$dgwplqLS1QUYgGKL7Csdd.kJFV8vQhcBQR/uVlc7MCybSEPrpjkve'
-        command2 = (f"INSERT INTO user VALUES (1, 'Theo', 'theo@gmail.com', 'Password1!')")
+        command2 = (f"INSERT INTO user VALUES (4, 'Theo123', 'theomc@gmail.com', 'Password1!')")
     
         self.cur.execute(command2)
         
@@ -49,14 +49,6 @@ class Sql:
         self.commit()
 
     
-    def check_username(self, username): # Check if the inputted username is already taken
-        command = (f"SELECT password FROM user WHERE username='{username}'")
-        self.cur.execute(command)
-
-        result = self.cur.fetchall()
-        return result[0][0]
-
-    
     def return_password(self, username):
         command = (f"SELECT password FROM user WHERE username='{username}'")
         self.cur.execute(command)
@@ -64,10 +56,33 @@ class Sql:
         result = self.cur.fetchall()
         # print(result[0][0])
         return result[0][0]
+    
+
+    def check_email(self, inputted_email):
+        command = (f"SELECT EXISTS(SELECT 1 FROM user WHERE email='{inputted_email}')")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+        return result[0][0]
+    
+
+    def check_username(self, username): # Check if the inputted username is already taken
+        command = (f"SELECT EXISTS(SELECT 1 FROM user WHERE username='{username}')")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+        return result[0][0]
+    
+
+    def update_password(self, email, new_password):
+        command = (f"UPDATE user SET password='{new_password}' WHERE email='{email}'")
+        self.cur.execute(command)
+
+        self.commit()
 
 
     def delete_values(self):
-        command = ("DELETE FROM user WHERE UserID = 0")
+        command = ("DELETE FROM user WHERE UserID = 4")
 
         self.cur.execute(command)
 

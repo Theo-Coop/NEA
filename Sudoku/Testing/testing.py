@@ -1,23 +1,10 @@
-import random
+import re
 
-nums = [random.randint(1,9) for _ in range(15)]
-starting_board = [
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0]
-]
+user_password = "Password1"
 
-for num in nums:
-    r = random.randint(0,8)
-    c = random.randint(0,8)
-    starting_board[r][c] = num
 
-print(starting_board)
-
-print(nums)
+regex = re.compile(r'^(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[#?!@$%^&*_-]).{8,}$')
+if regex.fullmatch(user_password):
+    print("Hooray!")
+else:
+    print("no")
