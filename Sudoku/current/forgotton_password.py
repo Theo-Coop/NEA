@@ -67,20 +67,21 @@ class ForgottonPassword(PasswordTemplateWindows):
 
 
     def send_email_code(self, code): # The actual emailing, takes code as input so the user can request the code again
-
-
-        # with smtplib.SMTP("smtp.gmail.com") as connection: # saves having to do connection.close()
-        #     connection.starttls()
-        #     connection.login(user=my_email, password=email_pw)
-        #     print("sending...")
-        #     connection.sendmail(from_addr=my_email, 
-        #         to_addrs=self.entered_email,
-        #         msg=f"Subject: Password code\n\nHello there. Your code is: {code}."
-        #     )
+        try:
+            with smtplib.SMTP("smtp.gmail.com") as connection: # saves having to do connection.close()
+                connection.starttls()
+                connection.login(user=my_email, password=email_pw)
+                print("sending...")
+                connection.sendmail(from_addr=my_email, 
+                    to_addrs=self.entered_email,
+                    msg=f"Subject: Password code\n\nHello there. Your code is: {code}."
+                )
+        except:
+            messagebox.showerror(title="Error", message="An issue prevented the email being sent, either the email cannot be reached or there is a connection issue.")
+        else:
+            messagebox.showinfo(title="Sent", message="Email has been sent")
 
         print(code)
-        messagebox.showinfo(title="Sent", message="Email has been sent")
-
 
     def send_email(self): # Function to generate the code and call the emailing function
         self.random_code = random.randint(100000, 999999)
