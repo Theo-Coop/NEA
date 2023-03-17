@@ -50,7 +50,7 @@ class ForgottonPassword(PasswordTemplateWindows):
         self.email_entry.grid(row=1, column=0, columnspan=3, padx=20, pady=10)
 
 
-        self.return_but = Button(self.window, text="Return")
+        self.return_but = Button(self.window, text="Return", command=self.close)
         self.return_but.grid(row=3, column=0, padx=10, pady=10)
 
         self.forgotton_password_button = Button(self.window, text="Send Code", font=self.FONT, command=self.send_email)
@@ -77,19 +77,24 @@ class ForgottonPassword(PasswordTemplateWindows):
                     msg=f"Subject: Password code\n\nHello there. Your code is: {code}."
                 )
         except:
-            messagebox.showerror(title="Error", message="An issue prevented the email being sent, either the email cannot be reached or there is a connection issue.")
+            print(code)
+            return False
         else:
-            messagebox.showinfo(title="Sent", message="Email has been sent")
+            print(code)
+            return True
 
-        print(code)
+        
+
 
     def send_email(self): # Function to generate the code and call the emailing function
         self.random_code = random.randint(100000, 999999)
 
         if self.validate_email(): # If the email is already in the DB
-            self.send_email_code(self.random_code) # Store the email sending code in another function so I can call it to resend email
-            self.close()
-            CheckCode(self, self.random_code, self.entered_email)
+            if self.send_email_code(self.random_code): # Store the email sending code in another function so I can call it to resend email
+                self.close()
+                CheckCode(self, self.random_code, self.entered_email)
+            else:
+                messagebox.showerror(title="Error", message="An issue prevented the email being sent, either the email cannot be reached or there is a connection issue.")
         else:
             messagebox.showerror(title="Error", message="Email does not exist.")
 

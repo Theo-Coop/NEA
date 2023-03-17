@@ -16,7 +16,7 @@ class Sql:
         self.con.close()
 
 
-    def create_tables(self):
+    def create_user_table(self):
         command1 = ("CREATE TABLE user("
                     "UserID INTEGER PRIMARY KEY,"
                     "username TEXT,"
@@ -26,7 +26,7 @@ class Sql:
         self.cur.execute(command1)
 
 
-    def insert_values(self):
+    def insert_user_values(self):
         # hashed = b'$2b$12$dgwplqLS1QUYgGKL7Csdd.kJFV8vQhcBQR/uVlc7MCybSEPrpjkve'
         command2 = (f"INSERT INTO user VALUES (4, 'Theo123', 'theomc@gmail.com', 'Password1!')")
     
@@ -81,7 +81,7 @@ class Sql:
         self.commit()
 
 
-    def delete_values(self):
+    def delete_user_values(self):
         command = ("DELETE FROM user WHERE UserID = 4")
 
         self.cur.execute(command)
@@ -90,7 +90,24 @@ class Sql:
 
 
 
+# Puzzle tables
+
+    def create_puzzle_table(self):
+        command = ("CREATE TABLE puzzle("
+                   "UserID INTEGER PRIMARY KEY,"
+                   "PuzzleID INTEGER,"
+                   "StartingBoard TEXT,"
+                   "EditedBoard TEXT)")
+        
+        self.cur.execute(command)
+
+
+    # TODO
+    def insert_into_puzzle(self):
+        pass
+
+
 
 if __name__ == "__main__":
     db = Sql()
-    db.delete_values()
+    db.create_puzzle_table()

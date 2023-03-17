@@ -92,6 +92,12 @@ class NewGame(game_template.GameTemplate):
         self.undo_but = Button(self.window, text="Undo", font=self.FONT, padx=10, command=self.undo)
         self.undo_but.grid(row=2, column=12, columnspan=2, padx=10)
 
+        self.save_but = Button(self.window, text="Save", font=self.FONT, padx=10, command=self.save_puzzle)
+        self.save_but.grid(row=3, column=11, padx=10)
+
+        self.load_but = Button(self.window, text="Load", font=self.FONT, padx=10, command=self.load_puzzle)
+        self.load_but.grid(row=3, column=12, columnspan=2, padx=10)
+
 
         self.return_label = Label(self.window, text="Return options", font=self.FONT)
         self.return_label.grid(row=4, column=11, columnspan=3)
@@ -109,6 +115,20 @@ class NewGame(game_template.GameTemplate):
 
         self.incorrect_guesses_label = Label(self.window, text=f"", fg="red", font=self.FONT)
         self.incorrect_guesses_label.grid(row=8, column=11, columnspan=3)
+
+
+    def save_puzzle(self):
+        if not self.is_signed_in: # If the person isn't signed in
+            messagebox.showerror(title="Error", message="You must be signed into your account to save puzzles")
+        else:
+            print("oh yeah yeah")
+
+
+    def load_puzzle(self):
+        if not self.is_signed_in:
+            messagebox.showerror(title="Error", message="You must be signed into your account to load puzzles")
+        else:
+            print("oh yes")
 
 
     def show_window(self):
@@ -141,6 +161,8 @@ class NewGame(game_template.GameTemplate):
         self.create_sign_in_buttons()
 
         self.account_label.config(text="")
+
+        self.is_signed_in = False
 
 
     def sign_in(self):
@@ -243,3 +265,30 @@ class NewGame(game_template.GameTemplate):
             else: # If the button is the "clear" button, put empty text on the game grid
                 self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)
                 self.numbers_stack.remove_element((row, col))
+
+
+
+
+class SavePuzzle:
+    def __init__(self):
+        self.window = Toplevel()
+
+        self.window.title("Save Puzzle")
+        self.FONT = ("Arial", 12, "bold")
+
+
+        self.save_entry = Entry(self.window, font=self.FONT)
+        self.save_entry.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+
+        self.submit_but = Button(self.window, text="Submit", font=self.FONT)
+        self.submit_but.grid(row=1, column=1, pady=5)
+
+        self.window.mainloop()
+
+
+    def close(self):
+        self.window.destroy()
+
+
+if __name__ == "__main__":
+    SavePuzzle()
