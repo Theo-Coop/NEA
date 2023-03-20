@@ -1,10 +1,10 @@
-import re
+import random
 
-user_password = "Password1"
+user_id = 5
 
+ran_num = random.randint(10000, 99999)
+print(ran_num)
 
-regex = re.compile(r'^(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[#?!@$%^&*_-]).{8,}$')
-if regex.fullmatch(user_password):
-    print("Hooray!")
-else:
-    print("no")
+puzzle_id = int(str(user_id) + str(ran_num))
+
+print(puzzle_id)

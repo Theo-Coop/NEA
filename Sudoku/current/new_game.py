@@ -5,9 +5,12 @@ import windows
 import game_template
 import generate_board
 import accounts
+import save_and_load
 
 
 generateBoardClass = generate_board.GenerateBoard() # Create an instance of the GeneratedBoard class
+
+
 
 # Select Difficulty window
 class SelectDifficuly:
@@ -47,6 +50,8 @@ class SelectDifficuly:
 class NewGame(game_template.GameTemplate):
     def __init__(self, difficulty):
         super().__init__() # Inherits from the GameTemplate class
+
+        self.username = "" # When signed in, username is stored
 
         self.is_signed_in = False # Variable to store whether the user is signed in or not
         self.lives = 5 # Number of lives the user has
@@ -121,7 +126,8 @@ class NewGame(game_template.GameTemplate):
         if not self.is_signed_in: # If the person isn't signed in
             messagebox.showerror(title="Error", message="You must be signed into your account to save puzzles")
         else:
-            print("oh yeah yeah")
+            edited_board_copy = deepcopy(self.board_class.game_board)
+            save_and_load.SavePuzzle(self.username, self.STARTING_BOARD, edited_board_copy)
 
 
     def load_puzzle(self):
@@ -144,6 +150,8 @@ class NewGame(game_template.GameTemplate):
 
 
     def signed_in(self, username): # The user is now signed in
+        self.username = username # Set the username variable to be the username of whoever is currently signed in
+
         self.is_signed_in = True
         self.create_account_button.destroy()
         self.sign_in_button.destroy()
@@ -265,30 +273,3 @@ class NewGame(game_template.GameTemplate):
             else: # If the button is the "clear" button, put empty text on the game grid
                 self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR, foreground="blue", disabledforeground="blue", font=self.FONT)
                 self.numbers_stack.remove_element((row, col))
-
-
-
-
-class SavePuzzle:
-    def __init__(self):
-        self.window = Toplevel()
-
-        self.window.title("Save Puzzle")
-        self.FONT = ("Arial", 12, "bold")
-
-
-        self.save_entry = Entry(self.window, font=self.FONT)
-        self.save_entry.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
-
-        self.submit_but = Button(self.window, text="Submit", font=self.FONT)
-        self.submit_but.grid(row=1, column=1, pady=5)
-
-        self.window.mainloop()
-
-
-    def close(self):
-        self.window.destroy()
-
-
-if __name__ == "__main__":
-    SavePuzzle()

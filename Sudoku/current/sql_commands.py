@@ -81,8 +81,20 @@ class Sql:
         self.commit()
 
 
-    def delete_user_values(self):
-        command = ("DELETE FROM user WHERE UserID = 4")
+    def get_user_id(self, username):
+        command = (f"SELECT UserID from user WHERE username='{username}'")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+        try:
+            return result[0][0] # Return the ID if it exits. It should always return the UserID as this is only called when the person is signed in so they will always have a valid username
+        except:
+            return False # Else, return False
+        
+
+
+    def delete_user_values(self, table):
+        command = (f"DELETE FROM {table} WHERE UserID = 4")
 
         self.cur.execute(command)
 
@@ -102,12 +114,13 @@ class Sql:
         self.cur.execute(command)
 
 
-    # TODO
-    def insert_into_puzzle(self):
-        pass
+    def insert_into_puzzle(self, userid, puzzleid, starting_board, edited_board):
+        command = (f"Insert into puzzle values ('{userid}', '{puzzleid}', '{starting_board}', '{edited_board}')")
+        self.cur.execute(command)
 
+        self.commit()
 
 
 if __name__ == "__main__":
     db = Sql()
-    db.create_puzzle_table()
+    db.delete_user_values("puzzle")
