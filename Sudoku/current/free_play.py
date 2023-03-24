@@ -127,7 +127,8 @@ class FreePlayWindow(game_template.GameTemplate):
                     self.numbers_stack.push([(row,col), num]) # Push the number onto the stack
 
             else: # If the button is the "clear" button, put empty text on the game grid
-                self.cells_dict[(row, col)].config(text="", bg=self.BUTTON_BG_COLOUR)
+                self.cells_dict[(row, col)].config(text="", foreground="blue", disabledforeground="blue", bg=self.BUTTON_BG_COLOUR)
+                self.board_class.update(num, row, col)
                 self.numbers_stack.remove_element((row, col))
 
 

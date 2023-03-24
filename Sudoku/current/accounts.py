@@ -173,15 +173,14 @@ class CreateAccount(UserWindowsTemplate):
 
         
         if db.check_username(user_username) == 1: # If the username already exists
-            messagebox.showerror(title="Error", message="Username already takens")
-            return False
-
-        regex = re.compile(r'^[a-zA-Z0-9_.-]+$')
-        if regex.fullmatch(user_username):
-            return True
+            messagebox.showerror(title="Error", message="Username already taken")
         else:
-            messagebox.showerror(title="Error", message=("Please enter a username only containing upper and "
-                                                         "lowercase letters, numbers, and the characters: _.-"))
+            regex = re.compile(r'^[a-zA-Z0-9_.-]+$')
+            if regex.fullmatch(user_username):
+                return True
+            else:
+                messagebox.showerror(title="Error", message=("Please enter a username only containing upper and "
+                                                            "lowercase letters, numbers, and the characters: _.-"))
     
 
     def validate_password(self):

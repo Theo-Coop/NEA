@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 
 class Sql:
@@ -102,25 +103,89 @@ class Sql:
 
 
 
-# Puzzle tables
+# Save table
 
-    def create_puzzle_table(self):
-        command = ("CREATE TABLE puzzle("
-                   "UserID INTEGER PRIMARY KEY,"
+    def create_save_table(self):
+        command = ("CREATE TABLE save("
+                   "SaveID INTEGER PRIMARY KEY,"
+                   "UserID INTEGER,"
                    "PuzzleID INTEGER,"
-                   "StartingBoard TEXT,"
-                   "EditedBoard TEXT)")
+                   "editedBoard TEXT)")
         
         self.cur.execute(command)
 
 
-    def insert_into_puzzle(self, userid, puzzleid, starting_board, edited_board):
-        command = (f"Insert into puzzle values ('{userid}', '{puzzleid}', '{starting_board}', '{edited_board}')")
+    def check_save_id(self, inputted_saveid):
+        command = (f"SELECT EXISTS(SELECT 1 FROM save WHERE SaveID='{inputted_saveid}')")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+        return result[0][0]
+    
+
+    def insert_into_save(self, saveid, userid, puzzleid, editedBoard):
+        command = (f"INSERT INTO save VALUES ({saveid}, {userid}, {puzzleid+1}, '{editedBoard}')")
+
         self.cur.execute(command)
 
         self.commit()
 
+    
+    def get_puzzle_id(self, saveid):
+        command = (f"SELECT PuzzleID FROM save WHERE SaveID={saveid}")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+
+        return result[0][0]
+    
+
+    def get_edited_board(self, userid, saveid):
+        command = (f"SELECT editedBoard FROM user, save WHERE user.UserID = save.UserID AND user.UserID={userid} AND save.SaveID={saveid}")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+
+        return result[0][0]
+
+
+# Puzzle tables
+
+    def create_puzzle_table(self):
+        command = ("CREATE TABLE puzzle("
+                   "PuzzleID INTEGER PRIMARY KEY,"
+                   "startingBoard TEXT,"
+                   "difficulty TEXT)")
+        
+        self.cur.execute(command)
+
+    
+    def get_latest_puzzleid(self):
+        command = ("SELECT * FROM puzzle ORDER BY PuzzleID DESC LIMIT 1") # Fetch the latest item to see the newest user ID
+        
+        self.cur.execute(command)
+        results = self.cur.fetchall()
+        latest_puzzle_id = results[0][0]
+        return latest_puzzle_id
+
+
+    def insert_into_puzzle(self, puzzle_id, starting_board, difficulty):
+        command2 = (f"INSERT INTO puzzle VALUES ('{puzzle_id+1}', '{starting_board}', '{difficulty}')")
+        self.cur.execute(command2)
+
+        self.commit()
+
+
+    def get_starting_board(self, puzzleid):
+        command = (f"SELECT startingBoard FROM puzzle WHERE PuzzleID='{puzzleid}'")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+        return result[0][0]
+
+
+
 
 if __name__ == "__main__":
     db = Sql()
-    db.delete_user_values("puzzle")
+    print(db.get_edited_board(4, 7717))

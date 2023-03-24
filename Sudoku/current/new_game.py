@@ -1,14 +1,17 @@
 from tkinter import *
 from tkinter import messagebox
 from copy import deepcopy
+import json
 import windows
 import game_template
 import generate_board
 import accounts
 import save_and_load
+import sql_commands
 
 
 generateBoardClass = generate_board.GenerateBoard() # Create an instance of the GeneratedBoard class
+db = sql_commands.Sql()
 
 
 
@@ -62,6 +65,11 @@ class NewGame(game_template.GameTemplate):
         # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
         self.STARTING_BOARD = generateBoardClass.create_board(difficulty)
 
+        db_starting_board = json.dumps(deepcopy(self.STARTING_BOARD))
+        self.puzzle_id = db.get_latest_puzzleid()
+
+        db.insert_into_puzzle(self.puzzle_id, db_starting_board, difficulty) # Insert the starting board and difficulty into the database
+        
         # Testing starting board
         # self.STARTING_BOARD = [
         #     [1,2,3,4,5,6,0,0,0],
@@ -127,14 +135,24 @@ class NewGame(game_template.GameTemplate):
             messagebox.showerror(title="Error", message="You must be signed into your account to save puzzles")
         else:
             edited_board_copy = deepcopy(self.board_class.game_board)
-            save_and_load.SavePuzzle(self.username, self.STARTING_BOARD, edited_board_copy)
+            save_and_load.SavePuzzle(self.username, self.puzzle_id, edited_board_copy)
 
 
     def load_puzzle(self):
         if not self.is_signed_in:
             messagebox.showerror(title="Error", message="You must be signed into your account to load puzzles")
         else:
-            print("oh yes")
+            save_and_load.LoadPuzzle(self)
+
+    
+    def repopulate_loaded_puzzle(self, start_board, edited_board):
+        
+
+        # self.board_class.game_board = db.load(puzzleid)[1]
+        self.STARTING_BOARD = start_board
+        self.board_class.game_board = edited_board
+        
+        self.populate_board()
 
 
     def show_window(self):
