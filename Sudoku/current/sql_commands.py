@@ -110,6 +110,7 @@ class Sql:
                    "SaveID INTEGER PRIMARY KEY,"
                    "UserID INTEGER,"
                    "PuzzleID INTEGER,"
+                   "lives INTEGER,"
                    "editedBoard TEXT)")
         
         self.cur.execute(command)
@@ -123,8 +124,8 @@ class Sql:
         return result[0][0]
     
 
-    def insert_into_save(self, saveid, userid, puzzleid, editedBoard):
-        command = (f"INSERT INTO save VALUES ({saveid}, {userid}, {puzzleid+1}, '{editedBoard}')")
+    def insert_into_save(self, saveid, userid, puzzleid, lives, editedBoard):
+        command = (f"INSERT INTO save VALUES ({saveid}, {userid}, {puzzleid+1}, {lives}, '{editedBoard}')")
 
         self.cur.execute(command)
 
@@ -147,7 +148,16 @@ class Sql:
         result = self.cur.fetchall()
 
         return result[0][0]
+    
 
+    def get_lives(self, userid, saveid):
+        command = (f"SELECT lives FROM user, save WHERE user.UserID = save.UserID AND user.UserID={userid} AND save.SaveID={saveid}")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+
+        return result[0][0]
+    
 
 # Puzzle tables
 
@@ -170,14 +180,22 @@ class Sql:
 
 
     def insert_into_puzzle(self, puzzle_id, starting_board, difficulty):
-        command2 = (f"INSERT INTO puzzle VALUES ('{puzzle_id+1}', '{starting_board}', '{difficulty}')")
+        command2 = (f"INSERT INTO puzzle VALUES ('{puzzle_id}', '{starting_board}', '{difficulty}')")
         self.cur.execute(command2)
 
         self.commit()
 
 
-    def get_starting_board(self, puzzleid):
-        command = (f"SELECT startingBoard FROM puzzle WHERE PuzzleID='{puzzleid}'")
+    def get_starting_board_with_saveid(self, saveid):
+        command = (f"SELECT startingBoard FROM save, puzzle WHERE save.PuzzleID = puzzle.PuzzleID AND save.SaveID={saveid}")
+        self.cur.execute(command)
+
+        result = self.cur.fetchall()
+        return result[0][0]
+
+
+    def get_starting_board_with_puzzleid(self, puzzleid):
+        command = (f"SELECT startingBoard FROM puzzle WHERE PuzzleID={puzzleid}")
         self.cur.execute(command)
 
         result = self.cur.fetchall()
@@ -185,7 +203,6 @@ class Sql:
 
 
 
-
 if __name__ == "__main__":
     db = Sql()
-    print(db.get_edited_board(4, 7717))
+    print(db.get_starting_board_with_puzzleid(26))

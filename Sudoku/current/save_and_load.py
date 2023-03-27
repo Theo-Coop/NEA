@@ -11,7 +11,7 @@ db = sql_commands.Sql() # Create an instance of the Database class
 
 
 class SavePuzzle:
-    def __init__(self, username, puzzleid, edited_board):
+    def __init__(self, username, puzzleid, lives, edited_board):
         self.window = Toplevel()
 
         # Generate SaveID
@@ -21,6 +21,7 @@ class SavePuzzle:
 
         self.username = username # The username of whoever is signed in
         self.puzzle_id = puzzleid
+        self.lives = lives
         self.edited_board = json.dumps(edited_board)
 
         self.window.title("Save Puzzle")
@@ -43,7 +44,7 @@ class SavePuzzle:
         user_id = db.get_user_id(self.username)
 
         # DB insert into save
-        db.insert_into_save(self.save_id, user_id, self.puzzle_id, self.edited_board)
+        db.insert_into_save(self.save_id, user_id, self.puzzle_id, self.lives, self.edited_board)
 
         messagebox.showinfo(title="Success", message="Board saved.")
 
@@ -72,7 +73,6 @@ class LoadPuzzle:
         self.load_but = Button(self.window, text="Load", font=self.FONT, command=self.load)
         self.load_but.grid(row=2, column=1, pady=5)
 
-        self.window.mainloop()
 
 
     def close(self):
@@ -81,15 +81,67 @@ class LoadPuzzle:
 
     def load(self):
         saveid = self.load_entry.get()
-
         user_id = db.get_user_id(self.username)
 
-        edited_puzzle = db.get_edited_board(user_id, saveid)
+        try:
+            edited_puzzle = db.get_edited_board(user_id, saveid)
+            starting_puzzle = db.get_starting_board_with_saveid(saveid)
+        except:
+            messagebox.showerror(title="Error", message="We could not find a puzzle with that Save ID")
+        else:
+            # get lives
+            lives = db.get_lives(user_id, saveid)
+
+            self.game_window.repopulate_loaded_puzzle(lives, starting_puzzle, edited_puzzle, saveid)
+
+            self.close()
+
+
+
+
+
+class LoadStartingBoard:
+    def __init__(self, game_window):
+        self.window = Toplevel()
+
+        self.game_window = game_window
+
+        self.window.title("Load Starting Board")
+        self.FONT = ("Arial", 12, "bold")
 
         
+        self.info_label = Label(self.window, text="Enter puzzleID:", font=self.FONT)
+        self.info_label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
 
-        self.close()
+        self.puzzleid_entry = Entry(self.window, font=("Arial", 20, "bold"), width=7, justify="center")
+        self.puzzleid_entry.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
+
+
+        self.load_but = Button(self.window, text="Load", font=self.FONT, command=self.load)
+        self.load_but.grid(row=2, column=1, padx=10, pady=10)
+        
+
+    
+    def close(self):
+        self.window.destroy()
+
+
+    def load(self):
+        inputted_puzzleid = self.puzzleid_entry.get()
+        try:
+            start_board = db.get_starting_board_with_puzzleid(inputted_puzzleid)
+        except:
+            messagebox.showerror(title="Error", message="No starting board could be found with that Puzzle ID")
+        else:
+            self.game_window.repopulate_starting_board(start_board, inputted_puzzleid)
+
+            self.close()
+
+
+         
+
+
 
 
 if __name__ == "__main__":
-    LoadPuzzle("yes")
+    LoadStartingBoard("yes")

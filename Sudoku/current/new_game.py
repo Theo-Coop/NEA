@@ -60,15 +60,17 @@ class NewGame(game_template.GameTemplate):
         self.lives = 5 # Number of lives the user has
         self.INCORRECT_ICON = "❌"
 
-        self.window.title(f"New Game - {difficulty.capitalize()} difficulty") # Sets the window title
+        
         
         # A constant which is the starting board generated from the GenerateBoard class in generate_board.py
         self.STARTING_BOARD = generateBoardClass.create_board(difficulty)
 
         db_starting_board = json.dumps(deepcopy(self.STARTING_BOARD))
-        self.puzzle_id = db.get_latest_puzzleid()
+        self.puzzle_id = db.get_latest_puzzleid() + 1
 
         db.insert_into_puzzle(self.puzzle_id, db_starting_board, difficulty) # Insert the starting board and difficulty into the database
+
+        self.window.title(f"New Game - {difficulty.capitalize()} difficulty. Puzzle {self.puzzle_id}") # Sets the window title
         
         # Testing starting board
         # self.STARTING_BOARD = [
@@ -112,15 +114,19 @@ class NewGame(game_template.GameTemplate):
         self.load_but.grid(row=3, column=12, columnspan=2, padx=10)
 
 
+        self.load_previous_but = Button(self.window, text="Load pre-generated puzzles", font=("Arial", 10, "bold"), command=self.load_starting_board)
+        self.load_previous_but.grid(row=4, column=11, columnspan=3, padx=10)
+
+
         self.return_label = Label(self.window, text="Return options", font=self.FONT)
-        self.return_label.grid(row=4, column=11, columnspan=3)
+        self.return_label.grid(row=5, column=11, columnspan=3)
 
         self.quit_but = Button(self.window, text="Quit", font=self.FONT, padx=10, command=self.quit)
-        self.quit_but.grid(row=5, column=11, padx=10)
+        self.quit_but.grid(row=6, column=11, padx=10)
 
 
         self.return_but = Button(self.window, text="Return", font=self.FONT, padx=10, command=self.select_diffficulty)
-        self.return_but.grid(row=5, column=12, columnspan=2)
+        self.return_but.grid(row=6, column=12, columnspan=2)
 
         # "Incorrect guesses" text
         self.return_label = Label(self.window, text="Incorrect guesses", font=self.FONT)
@@ -135,24 +141,62 @@ class NewGame(game_template.GameTemplate):
             messagebox.showerror(title="Error", message="You must be signed into your account to save puzzles")
         else:
             edited_board_copy = deepcopy(self.board_class.game_board)
-            save_and_load.SavePuzzle(self.username, self.puzzle_id, edited_board_copy)
+            save_and_load.SavePuzzle(self.username, self.puzzle_id, self.lives, edited_board_copy)
 
 
     def load_puzzle(self):
         if not self.is_signed_in:
             messagebox.showerror(title="Error", message="You must be signed into your account to load puzzles")
         else:
-            save_and_load.LoadPuzzle(self)
+            save_and_load.LoadPuzzle(self.username, self)
 
     
-    def repopulate_loaded_puzzle(self, start_board, edited_board):
+    def repopulate_loaded_puzzle(self, lives, start_board, edited_board, saveid):
+        self.STARTING_BOARD = json.loads(start_board)
+        self.board_class.game_board = json.loads(edited_board).copy()
+        self.lives = lives # Changes the number of lives to the number on the previous save
+        
+        self.populate_board() # Add the starting board numbers onto the board
+
+
+        for row in range(9):
+            for column in range(9):
+                num = self.board_class.game_board[row][column]
+                
+                if num != 0 and num != self.STARTING_BOARD[row][column]: # If the number is not 0 or not equal to a game square then place it as the user has edited it
+                    if self.board_class.num_valid(num, row, column): # If the number is actually valid
+                        self.cells_dict[(row, column)].config(text=num, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT)
+
+                    else: # If the old inputted numbers were incorrect according to the rules of Sudoku
+                        self.cells_dict[(row, column)].config(text=num, foreground="white", bg="red", font=self.FONT)
         
 
-        # self.board_class.game_board = db.load(puzzleid)[1]
-        self.STARTING_BOARD = start_board
-        self.board_class.game_board = edited_board
-        
-        self.populate_board()
+        # Change title to say loaded puzzle
+        self.window.title(f"Loaded game - {saveid}")
+
+        # Add the number of lives lost
+        self.incorrect_guesses_label.config(text=self.INCORRECT_ICON*(5-lives)) # Put the number of incorrect guesses onto the screen
+
+
+    def load_starting_board(self):
+        if not self.is_signed_in:
+            messagebox.showerror(title="Error", message="You must be signed into your account to load puzzles")
+        else:
+            save_and_load.LoadStartingBoard(self)
+
+
+    def repopulate_starting_board(self, start_board, puzzleid):
+        self.STARTING_BOARD = json.loads(start_board)
+        self.board_class.game_board = deepcopy(self.STARTING_BOARD) # Make the game board equal to the starting board
+
+        self.populate_board() # Wipes the board, clears stack, adds numbers to the board
+
+        self.window.title(f"Playing loaded puzzle {puzzleid}")
+
+        # Reset lives and incorrect guesses icon as user is starting a fresh game
+        self.lives = 5
+        self.incorrect_guesses_label.config(text="")
+
 
 
     def show_window(self):
@@ -254,7 +298,6 @@ class NewGame(game_template.GameTemplate):
         except:
             messagebox.showerror(title="Number Error", message="Please select a number before trying to place a number")
         else:
-            # self.board_class.update(num, row, col) # Update the backend board (not the GUI)
             if num != 0: # If the button is not the "clear" button
                 if self.board_class.num_valid(num, row, col): # If the number is actually valid
                     self.cells_dict[(row, col)].config(text=num, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT)
@@ -276,7 +319,7 @@ class NewGame(game_template.GameTemplate):
 
                 if existing_num != 0: # There is already a number in that spot on the board
                     if num != existing_num: # If the user has overwritten the already placed number with a new number
-                        self.board_class.update(num, row, col)
+                        self.board_class.update(num, row, col) # Update the backend board (not the GUI)
                         self.numbers_stack.remove_element((row, col)) # Remove the old number from the stack
                         self.numbers_stack.push([(row,col), num])
                 else:
