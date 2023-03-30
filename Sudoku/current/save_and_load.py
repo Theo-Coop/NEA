@@ -10,6 +10,7 @@ db = sql_commands.Sql() # Create an instance of the Database class
 
 
 
+# Class SavePuzzle
 class SavePuzzle:
     def __init__(self, username, puzzleid, lives, edited_board):
         self.window = Toplevel()
@@ -22,7 +23,7 @@ class SavePuzzle:
         self.username = username # The username of whoever is signed in
         self.puzzle_id = puzzleid
         self.lives = lives
-        self.edited_board = json.dumps(edited_board)
+        self.edited_board = json.dumps(edited_board) # json.dumps() converts a list into a string, so it can be put into the database
 
         self.window.title("Save Puzzle")
         self.FONT = ("Arial", 12, "bold")
@@ -54,12 +55,13 @@ class SavePuzzle:
 
 
 
+# LoadPuzzle class
 class LoadPuzzle:
     def __init__(self, username, game_window):
         self.window = Toplevel()
 
         self.username = username
-        self.game_window = game_window
+        self.game_window = game_window # The instance of the class which called this class so functions from that class can be called from this class
 
         self.window.title("Load puzzle")
         self.FONT = ("Arial", 12, "bold")
@@ -79,12 +81,13 @@ class LoadPuzzle:
         self.window.destroy()
 
 
+    # Loads the board
     def load(self):
         saveid = self.load_entry.get()
-        user_id = db.get_user_id(self.username)
+        user_id = db.get_user_id(self.username) # Grab the userID from the person's username
 
         try:
-            edited_puzzle = db.get_edited_board(user_id, saveid)
+            edited_puzzle = db.get_edited_board(user_id, saveid) # See if there is a puzzle with that SaveID
             starting_puzzle = db.get_starting_board_with_saveid(saveid)
         except:
             messagebox.showerror(title="Error", message="We could not find a puzzle with that Save ID")
@@ -92,19 +95,19 @@ class LoadPuzzle:
             # get lives
             lives = db.get_lives(user_id, saveid)
 
-            self.game_window.repopulate_loaded_puzzle(lives, starting_puzzle, edited_puzzle, saveid)
+            self.game_window.repopulate_loaded_puzzle(lives, starting_puzzle, edited_puzzle, saveid) # Call the function in the "New Game" file
 
             self.close()
 
 
 
 
-
+# Class LoadStartingBoard
 class LoadStartingBoard:
     def __init__(self, game_window):
         self.window = Toplevel()
 
-        self.game_window = game_window
+        self.game_window = game_window # The instance of the class which called this class so functions from that class can be called from this class
 
         self.window.title("Load Starting Board")
         self.FONT = ("Arial", 12, "bold")
@@ -126,14 +129,15 @@ class LoadStartingBoard:
         self.window.destroy()
 
 
+    # loads the starting board
     def load(self):
-        inputted_puzzleid = self.puzzleid_entry.get()
+        inputted_puzzleid = self.puzzleid_entry.get() # puzzle ID entered by user
         try:
-            start_board = db.get_starting_board_with_puzzleid(inputted_puzzleid)
+            start_board = db.get_starting_board_with_puzzleid(inputted_puzzleid) # Get the starting board from the puzzle ID
         except:
             messagebox.showerror(title="Error", message="No starting board could be found with that Puzzle ID")
         else:
-            self.game_window.repopulate_starting_board(start_board, inputted_puzzleid)
+            self.game_window.repopulate_starting_board(start_board, inputted_puzzleid) # Call the function in the "New Game" file
 
             self.close()
 
@@ -143,5 +147,3 @@ class LoadStartingBoard:
 
 
 
-if __name__ == "__main__":
-    LoadStartingBoard("yes")

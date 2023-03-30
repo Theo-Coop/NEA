@@ -20,6 +20,7 @@ class WindowTemplate:
         exit()
 
 
+
 # Hidden window to run in the background because one window needs a "mainloop" and tkinter does not like
 # windows constantly opening and closing each with their own mainloop so this windows is always open
 # but hidden in the background
@@ -30,6 +31,7 @@ class hidden:
         
         Welcome() # Calls the main Welcome class
         self.window.mainloop()
+
 
 
 
@@ -73,6 +75,7 @@ class Welcome(WindowTemplate):
 # This is outside the class because it only has to run once at the start of the program
 # Instead of running every time the "Rules" page is opened which takes time
 
+
 try: # School WiFi doesn't allow API calls
     API_TEXT = requests.get(url="https://api.npoint.io/683413d787a24bac2915").json()
     TEXT = API_TEXT["Sudoku"]["Rules"]  # Stores the text in a constant
@@ -82,6 +85,7 @@ except:
             "repeating any numbers in the row, column, or square. The puzzles come with a minimum "
             "of 17 pre-filled numbers for only one solution. To play this game, first press a "
             "number below the board and press the cell on the board which you want to place the number in.")
+
 
 
 # Rules page class
@@ -107,5 +111,6 @@ class Rules(WindowTemplate):
 
 
 # This starts the program
+# You start the program by running this file.
 if __name__ == "__main__":
     hidden()

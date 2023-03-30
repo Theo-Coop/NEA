@@ -41,20 +41,22 @@ class Stack:
         while not self.is_empty():
             self.pop()
 
-    
+
+
+    # Stack reallocation algorithm
     # Removes the element in the stack with the given co-ords by removing everything from the stack, 
     # holding it in a temporary stack and putting it back in the original one
     def remove_element(self, co_ords):
         temp = Stack()
 
-        while self.head and self.head.data[0] != co_ords:
+        while self.head and self.head.data[0] != co_ords: # Add every number into the temporary stack until you reach the desired value
             temp.push(self.pop())
 
-        if self.head:
+        if self.head: # If there is an item at the head, pop it (this is the desired item we want to remove)
             self.pop()
 
-        while temp.is_empty() == False:
-            self.push(temp.pop())
+        while temp.is_empty() == False: # while there are numbers in the temporary stack
+            self.push(temp.pop()) # Add them into the game stack
            
 
     # def print_stack(self):

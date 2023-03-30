@@ -25,16 +25,16 @@ class GenerateBoard:
             r = random.randint(0,8)
             c = random.randint(0,8)
 
-            while not self.valid(num, r, c): # If the current selection isn't random, choose a new random square and number
+            while not self.valid(num, r, c): # If the current selection isn't valid, choose a new random square and number
                 num = random.randint(1,9)
                 r = random.randint(0,8)
                 c = random.randint(0,8)
 
 
 
-            self.starting_board[r][c] = num
+            self.starting_board[r][c] = num # update the board with the number selected in the row and column selected
 
-        self.solve()
+        self.solve() # Solve the board using the solver
 
 
         # The two numbers of the difficulty range
@@ -43,11 +43,12 @@ class GenerateBoard:
 
 
         # Generate a random list of cells
+        # This is every square on the 9x9 board.
         cells = [(r, c) for r in range(9) for c in range(9)]
-        random.shuffle(cells)   
+        random.shuffle(cells)   # Shuffle all the moves around
 
 
-        # Clear the cell
+        # Clears the number of cells specified
         for i in range(nums_to_be_removed):
             self.remove_square(cells[i])
 
