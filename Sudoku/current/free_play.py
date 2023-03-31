@@ -146,7 +146,7 @@ class FreePlayWindow(game_template.GameTemplate):
 
         else:
             messagebox.showerror(title="Error", message="Sorry, the current board is unsolvable")
-            # If board is unsolvable, pop up an error to the user
+            # If board is unsolvable, throw an error to the user
 
 
     # Solve function

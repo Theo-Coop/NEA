@@ -141,9 +141,3 @@ class LoadStartingBoard:
 
             self.close()
 
-
-         
-
-
-
-

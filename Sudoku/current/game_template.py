@@ -40,7 +40,8 @@ class GameTemplate:
 
                 # Creates the game buttons
                 # The lambda function allows the rows and columns to be stored in the dictionary as well (refer to line 54)
-                game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT, command=lambda row=row, col=col: self.player_update_num(row, col))
+                game_buttons = Button(frame, justify="center", width=4, height=2, padx=0, pady=0, foreground="blue", bg=self.BUTTON_BG_COLOUR, font=self.FONT,
+                                        command=lambda row=row, col=col: self.player_update_num(row, col))
                 game_buttons.pack()
                 self.cells_dict[(row, col)] = game_buttons
 

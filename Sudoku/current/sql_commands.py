@@ -89,7 +89,8 @@ class Sql:
 
         result = self.cur.fetchall()
         try:
-            return result[0][0] # Return the ID if it exits. It should always return the UserID as this is only called when the person is signed in so they will always have a valid username
+            return result[0][0] # Return the ID if it exits. It should always return the UserID as this is only called when the person is signed in 
+                                # so they will always have a valid username
         except:
             return False # Else, return False
         

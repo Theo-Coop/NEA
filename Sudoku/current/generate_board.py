@@ -20,7 +20,7 @@ class GenerateBoard:
         self.starting_board = [[0 for _ in range(9)] for _ in range(9)]
 
         # Fill in 13 random squares with a random number according to the rules of Sudoku
-        for num in range(13):
+        for i in range(13):
             num = random.randint(1,9)
             r = random.randint(0,8)
             c = random.randint(0,8)
@@ -34,12 +34,24 @@ class GenerateBoard:
 
             self.starting_board[r][c] = num # update the board with the number selected in the row and column selected
 
+        self.print_board()
+        print()
+        print()
+
         self.solve() # Solve the board using the solver
+
+        self.print_board()
+        print()
+        print()
 
 
         # The two numbers of the difficulty range
         a, b = DICT_NUMS_TO_BE_REMOVED[difficulty][0], DICT_NUMS_TO_BE_REMOVED[difficulty][1]
         nums_to_be_removed = random.randint(a,b) # Generate a random number of squares to be removed based on the difficulty
+
+        print(nums_to_be_removed)
+        print()
+        print()
 
 
         # Generate a random list of cells
@@ -52,7 +64,8 @@ class GenerateBoard:
         for i in range(nums_to_be_removed):
             self.remove_square(cells[i])
 
-        
+        self.print_board()
+
         return self.starting_board # Return the board
 
 
@@ -131,4 +144,5 @@ class GenerateBoard:
 
 
 if __name__ == "__main__":
-    GenerateBoard("easy")
+    board = GenerateBoard()
+    board.create_board("easy")

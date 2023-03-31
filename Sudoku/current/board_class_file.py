@@ -1,4 +1,4 @@
-# Board class used in the Free Play and New Game moddes
+# Board class used in the Free Play and New Game modes
 class GameBoard:
     def __init__(self):
         self.new_board() # Call the new_board function when starting this class
